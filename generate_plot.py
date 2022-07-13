@@ -29,7 +29,8 @@ def generate_plot(args):
     fig = go.Figure()
     fig.update_layout(
         title='Datalog',
-        legend_title_text='Logged Tags'
+        legend_title_text='Logged Tags',
+        xaxis=dict(rangeslider=dict(visible=True), type='category')
     )
     fig.update_xaxes(title_text='Time')
     fig.update_yaxes(title_text='Value')
