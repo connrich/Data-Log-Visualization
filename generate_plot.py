@@ -1,4 +1,3 @@
-import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import sys
@@ -16,6 +15,7 @@ def generate_plot(args):
     else:
         df = pd.read_csv(args[1])
 
+    # Pivot the dataframe so it is easier to select data by tag name
     table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
 
     # Find all unique device tags and store the data in a dictionary
@@ -25,51 +25,26 @@ def generate_plot(args):
     for i in table.index.unique(level='VarName'):
         dic[i] = table.loc[(i, )]
 
-    tag = 'PT565_Value'
-
-    fig = px.line(x=dic[tag].index.tolist(), y=dic[tag]['VarValue'],
-                    labels={
-                        'x': 'Time',
-                        'y': 'Value'
-                    },
-                    title=tag
+    # Generate a figure object to store the plots
+    fig = go.Figure()
+    fig.update_layout(
+        title='Datalog',
+        legend_title_text='Logged Tags'
     )
+    fig.update_xaxes(title_text='Time')
+    fig.update_yaxes(title_text='Value')
 
-    # Fig = go.Figure()
-    # Fig.add_trace(
-    #     go.Scatter(x=dic[tag].index.tolist(), y=list(dic[tag]['VarValue']))
-    # )
-
-    # # Add range slider
-    # Fig.update_layout(
-    #     xaxis=dict(
-    #         rangeselector=dict(
-    #             buttons=list([
-    #                 dict(count=1,
-    #                     label="1m",
-    #                     step="month",
-    #                     stepmode="backward"),
-    #                 dict(count=6,
-    #                     label="6m",
-    #                     step="month",
-    #                     stepmode="backward"),
-    #                 dict(count=1,
-    #                     label="YTD",
-    #                     step="year",
-    #                     stepmode="todate"),
-    #                 dict(count=1,
-    #                     label="1y",
-    #                     step="year",
-    #                     stepmode="backward"),
-    #                 dict(step="all")
-    #             ])
-    #         ),
-    #         rangeslider=dict(
-    #             visible=True
-    #         ),
-    #         type="date"
-    #     )
-    # )
+    # Iterate through the tags and add them to the graph
+    # All lines are hidden to start and are shown by clicking in the legend
+    for key in dic.keys():
+        fig.add_trace(
+            go.Scatter(
+                x=dic[key].index, 
+                y=dic[key]['VarValue'],
+                name=key,
+                visible='legendonly'
+            )
+        )
 
     # Convert figure to interactive html to run in browser
     fig.write_html('plotly_test.html')
