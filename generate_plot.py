@@ -6,13 +6,11 @@ import os
 from csv_processor import clean_data
 
 def generate_plot(args):
-    # Cleans commas 
-    #clean_data(args)
 
-    # Clean data is saved to second argument if given
+    # Data is saved to second argument if given
     if len(args) == 3:
         df = pd.read_csv(args[2], delimiter=';', low_memory=False,decimal = ',')
-    # Clean data is overwritten if only 1 arg given
+    # Data is overwritten if only 1 arg given
     else:
         df = pd.read_csv(args[1], delimiter=';', low_memory=False,decimal = ',')
 
