@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 import pandas as pd
 import sys
+import os 
 
 from csv_processor import clean_data
 
@@ -49,6 +50,9 @@ def generate_plot(args):
 
     # Convert figure to interactive html to run in browser
     fig.write_html('plotly_test.html')
+
+    # Automatically opens the graph once script has run
+    os.system("start plotly_test.html")
 
 
 

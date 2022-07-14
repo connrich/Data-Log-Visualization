@@ -4,12 +4,15 @@ import sys
 
 # Loads the csv and formats ',' to '.' to avoid issues in Excel
 def clean_data(args):
+    # 1st argument should be path to CSV
     csv_path = args[1]
     df = pd.read_csv(csv_path, header=None, names=[0,1,2,3,4], delimiter=';')
     
+    # Replace commas with decimal point
     df[2] = df[2].apply(lambda x: x.replace(',', '.'))
     df[4] = df[4].apply(lambda x: x.replace(',', '.'))
 
+    # 2nd argument is path to save location
     if len(args) == 3:
         # Use save location if provided
         df.to_csv(args[2], index=False, header=False)
