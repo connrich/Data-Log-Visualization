@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 import os 
 
-from csv_processor import clean_data
+
 
 def generate_plot(args):
 
@@ -31,7 +31,8 @@ def generate_plot(args):
         legend_title_text='Logged Tags',
         xaxis=dict(rangeslider=dict(visible=True), type='category')
     )
-    fig.update_xaxes(title_text='Time')
+    fig.update_xaxes(title_text='Time',
+                        categoryorder='category ascending')
     fig.update_yaxes(title_text='Value')
 
     # Iterate through the tags and add them to the graph
