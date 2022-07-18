@@ -32,9 +32,9 @@ def generate_plot(args):
     fig.update_layout(
         title='Datalog',
         legend_title_text='Logged Tags',
-        xaxis=dict(rangeslider=dict(visible=True)) #, type='category'
+        xaxis=dict(rangeslider=dict(visible=True))
     )
-    fig.update_xaxes(title_text='Time') #, categoryorder='category ascending'
+    fig.update_xaxes(title_text='Time')
     fig.update_yaxes(title_text='Value')
 
     # Iterate through the tags and add them to the graph
@@ -58,5 +58,4 @@ def generate_plot(args):
 
 
 if __name__ == '__main__':
-    # generate_plot(sys.argv)
-    generate_plot(['', 'data.csv'])
+    generate_plot(sys.argv)
