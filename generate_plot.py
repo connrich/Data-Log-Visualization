@@ -14,6 +14,9 @@ def generate_plot(args):
     else:
         df = pd.read_csv(args[1], delimiter=';', low_memory=False,decimal = ',')
 
+    # Convert times to datetime
+    df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
+
     # Pivot the dataframe so it is easier to select data by tag name
     table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
 
@@ -29,10 +32,9 @@ def generate_plot(args):
     fig.update_layout(
         title='Datalog',
         legend_title_text='Logged Tags',
-        xaxis=dict(rangeslider=dict(visible=True), type='category')
+        xaxis=dict(rangeslider=dict(visible=True)) #, type='category'
     )
-    fig.update_xaxes(title_text='Time',
-                        categoryorder='category ascending')
+    fig.update_xaxes(title_text='Time') #, categoryorder='category ascending'
     fig.update_yaxes(title_text='Value')
 
     # Iterate through the tags and add them to the graph
@@ -56,4 +58,5 @@ def generate_plot(args):
 
 
 if __name__ == '__main__':
-    generate_plot(sys.argv)
+    # generate_plot(sys.argv)
+    generate_plot(['', 'data.csv'])
