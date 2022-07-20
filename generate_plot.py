@@ -9,10 +9,10 @@ def generate_plot(args):
 
     # Data is saved to second argument if given
     if len(args) == 3:
-        df = pd.read_csv(args[2], delimiter=';', low_memory=False,decimal = ',')
+        df = pd.read_csv(args[2], delimiter=';', low_memory=False, decimal=',')
     # Data is overwritten if only 1 arg given
     else:
-        df = pd.read_csv(args[1], delimiter=';', low_memory=False,decimal = ',')
+        df = pd.read_csv(args[1], delimiter=';', low_memory=False, decimal=',')
 
     # Convert times to datetime
     df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')

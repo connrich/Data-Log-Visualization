@@ -1,4 +1,3 @@
-from dotenv import load_ipython_extension
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -8,6 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 import sys
 import time
 
+from generate_plot import generate_plot
+
 
 # TODO 
 # Create wait functions for elements in case of server latency
@@ -15,6 +16,8 @@ import time
 #           files = ['data.csv', 'data_log.csv']
 # Add functionality to wait until all downloads are complete 
 #           https://stackoverflow.com/questions/48263317/selenium-python-waiting-for-a-download-process-to-complete-using-chrome-web
+# Add ability to select download location 
+#           File path to download location based on where scripts are saved 
 
 
 address = '192.168.0.102'
@@ -35,16 +38,28 @@ def download_log(args):
             print('clicked')
         except Exception as e:
             print(e)
+    
+    def finish_downloads(driver):
+        if not driver.current_url.startswith("chrome://downloads"):
+            driver.get("chrome://downloads/")
+        return driver.execute_script("""
+            return document.querySelector('downloads-manager')
+            .shadowRoot.querySelector('#downloadsList')
+            .items.filter(e => e.state === 'COMPLETE')
+            .map(e => e.filePath || e.file_path || e.fileUrl || e.file_url);
+            """)
 
     # Start a service using the Chrome driver
     service = Service(executable_path='chromedriver_win32/chromedriver.exe')
 
     # Options for the service 
-    options = Options()
+    options = webdriver.ChromeOptions()
     options.add_experimental_option('detach', True)
+    prefs = {"download.default_directory": r"C:\Users\Quantum\Desktop\Data Log Visualization\\"}
+    options.add_experimental_option("prefs", prefs)
 
     # Initialize web driver
-    driver = webdriver.Chrome(service=service)
+    driver = webdriver.Chrome(service=service, options=options)
 
     # Navigate to website
     driver.get(f'http://{address}')
@@ -72,10 +87,14 @@ def download_log(args):
 
     # Used to wait until download is complete
     # Will be replaced by better functionality in the future
-    time.sleep(300)
 
+    paths = WebDriverWait(driver, 600, 1).until(finish_downloads)
+    
     # Ends the session by closing all windows and terminating the driver 
     driver.quit()
+
+    generate_plot(['', 'System_Sensor_log0.csv'])
+
     
 
 
