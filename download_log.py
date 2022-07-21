@@ -1,4 +1,3 @@
-from dotenv import load_ipython_extension
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -7,23 +6,25 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import sys
 import time
+import os
+
+from generate_plot import generate_plot
 
 
-# TODO 
-# Create wait functions for elements in case of server latency
-# Add ability to select file to download using the file name 
-#           files = ['data.csv', 'data_log.csv']
-# Add functionality to wait until all downloads are complete 
-#           https://stackoverflow.com/questions/48263317/selenium-python-waiting-for-a-download-process-to-complete-using-chrome-web
-
-
+# HMI address
 address = '192.168.0.102'
+# Username for log in 
 username = 'Administrator'
+# Password for log in
 password = 'admin'
 
-csv_names = ['System_Sensor_log0.csv']
+# Names of files to download 
+csv_names = ['System_Sensor_log0.csv', 'NMR_Flow0.csv']
+
+
 
 def download_log(args):
+
     # Custom function for waiting for elements 
     def load_then_click(xpath):
         try:
@@ -35,16 +36,27 @@ def download_log(args):
             print('clicked')
         except Exception as e:
             print(e)
+    
+    # Waits until all downloads are completed
+    def wait_for_downloads():
+        while any([filename.endswith(".crdownload") for filename in 
+                os.listdir(download_path)]):
+            time.sleep(2)
+
+    # Downloads files to the current working directory
+    download_path = os.getcwd()
 
     # Start a service using the Chrome driver
     service = Service(executable_path='chromedriver_win32/chromedriver.exe')
 
     # Options for the service 
-    options = Options()
+    options = webdriver.ChromeOptions()
     options.add_experimental_option('detach', True)
+    prefs = {"download.default_directory": download_path}
+    options.add_experimental_option("prefs", prefs)
 
     # Initialize web driver
-    driver = webdriver.Chrome(service=service)
+    driver = webdriver.Chrome(service=service, options=options)
 
     # Navigate to website
     driver.get(f'http://{address}')
@@ -66,16 +78,24 @@ def download_log(args):
     # Click the USB storage button
     load_then_click('/html/body/table[2]/tbody/tr/td[3]/table[2]/tbody/tr[9]/td[2]/a/b/font')
 
-    # Click the download button
-    # Current just set to download the third item in the USB list 
-    load_then_click('/html/body/table[2]/tbody/tr/td[3]/div/font/table/tbody/tr[5]/td[2]/a')
+    # Iterate through file names and click each download link
+    for name in csv_names:
+        load_then_click(f"//a[text()='{name}']")
+    
+    # Display downloads page
+    driver.get("chrome://downloads/")
 
     # Used to wait until download is complete
-    # Will be replaced by better functionality in the future
-    time.sleep(300)
+    # paths = WebDriverWait(driver, 600, 1).until(finish_downloads)
+    wait_for_downloads()
 
     # Ends the session by closing all windows and terminating the driver 
     driver.quit()
+
+    # Create html plots
+    for name in csv_names:
+        generate_plot(['', name])
+
     
 
 
