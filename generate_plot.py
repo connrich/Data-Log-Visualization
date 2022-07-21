@@ -50,10 +50,11 @@ def generate_plot(args):
         )
 
     # Convert figure to interactive html to run in browser
-    fig.write_html('plotly_test.html')
+    name = args[1].split('.')[0]
+    fig.write_html(f'{name}.html')
 
     # Automatically opens the graph once script has run
-    os.system("start plotly_test.html")
+    os.system(f"start {name}.html")
 
 
 

@@ -28,12 +28,10 @@ def download_log(args):
     # Custom function for waiting for elements 
     def load_then_click(xpath):
         try:
-            print('looking')
             element = WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located((By.XPATH, xpath))
             )
             element.click()
-            print('clicked')
         except Exception as e:
             print(e)
     
