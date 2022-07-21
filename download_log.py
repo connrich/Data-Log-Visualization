@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,8 +6,12 @@ from selenium.webdriver.support import expected_conditions as EC
 import sys
 import time
 import os
+import pandas as pd
+from data_object import Data
+from data_object import load
 
 from generate_plot import generate_plot
+
 
 
 # HMI address
@@ -19,7 +22,7 @@ username = 'Administrator'
 password = 'admin'
 
 # Names of files to download 
-csv_names = ['System_Sensor_log0.csv', 'NMR_Flow0.csv']
+csv_names = ['System_Sensor_log0.csv']
 
 
 
@@ -95,6 +98,15 @@ def download_log(args):
     # Create html plots
     for name in csv_names:
         generate_plot(['', name])
+
+    utrecht = load()
+    utrecht.merge(csv_names[0])
+
+
+
+
+
+
 
     
 
