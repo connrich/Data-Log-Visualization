@@ -6,9 +6,12 @@ from PyQt5.QtCore import Qt
 import pyqtgraph as pg
 import pandas as pd
 from datetime import datetime
+import os
+import json
 
 from gui_resources.graph_widget import GraphWidget
 from gui_resources.data_selection_widget import DataSelectionWidget, DataSet
+from gui_resources.settings_window import SettingsWindow
 from gui_resources.style import StyleSheet as SS
 
 
@@ -19,6 +22,9 @@ class MainWindow(QMainWindow):
     '''
     def __init__(self):
         super().__init__()
+
+        # Global application settings
+        self.loadSettings()
 
         # Main window settings
         self.setWindowTitle('Trends')
@@ -37,9 +43,21 @@ class MainWindow(QMainWindow):
         # Initialize data structures
         self.loadedData = {}
 
-        # Load a csv file 
-        self.loadData('System_Sensor_log0.csv')
-            
+        # # Load a csv file 
+        # self.loadData('System_Sensor_log0.csv')
+    
+    def loadSettings(self) -> None:
+        '''
+        Loads in settings from a json file and constructs the settings window
+        '''
+        # Load settings from json
+        with open(os.path.join(os.path.dirname(__file__), 'gui_resources\\settings.json'), 'r') as json_file:
+            self.settings = json.load(json_file)
+
+        # Construct settings window
+        self.SettingsWindow = SettingsWindow(settings=self.settings)
+        # self.SettingsWindow.setWindowIcon(QIcon(os.path.join(os.path.dirname(__file__), 'Resources\\SettingsGear.png')))
+
     def constructDataSelectionDock(self):
         '''
         Initial construction for data selection dock widget
@@ -74,6 +92,11 @@ class MainWindow(QMainWindow):
         # Create menu bar
         self.MenuBar = QMenuBar()
         self.setMenuBar(self.MenuBar)
+
+        # Add action for opening settings window
+        self.SettingsAction = QAction('Settings')
+        self.SettingsAction.triggered.connect(self.SettingsWindow.showWindow)
+        self.MenuBar.addAction(self.SettingsAction)
 
         # Add action for loading a dataset
         self.loadDataAction = QAction('Load Dataset')
