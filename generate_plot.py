@@ -10,6 +10,7 @@ def generate_plot(args):
 
     utrecht = load()
     table = utrecht.display()
+    dic = {}
 
     for i in table.index.unique(level='VarName'):
         dic[i] = table.loc[(i, )]
