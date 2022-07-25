@@ -3,13 +3,13 @@ import pandas as pd
 import sys
 import os 
 from data_object import Data
-from data_object import load
+
 
 
 def generate_plot(args):
 
-    utrecht = Data()
-    table = utrecht.display()
+    file = Data()
+    table = file.display()
     dic = {}
 
     for i in table.index.unique(level='VarName'):
@@ -38,7 +38,8 @@ def generate_plot(args):
         )
 
     # Convert figure to interactive html to run in browser
-    name = args[1].split('.')[0]
+    system =file.name()
+    name = file.name().split('.')[0]
     fig.write_html(f'{name}.html')
 
     # Automatically opens the graph once script has run

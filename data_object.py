@@ -1,31 +1,43 @@
 import pandas as pd
 import pickle
-
+import os
+#Data object for saving pandas dataframes
 class Data():
+    #initialize by loading file
     def __init__(self):
         file = self.load()
         self.M = file.display()
+    #blank function that returns dataframe
     def display(self):
         return self.M
+    #merges current data frame with new data, deletes repeats
     def merge(self,filename):
-        new = upload(filename)
-        self.M = pd.concat([new, self.M], axis=0, copy=False)
+        df = pd.read_csv(filename, delimiter=';', low_memory=False, decimal=',')
+        df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
+        df = df.drop(columns=['Time_ms', 'Validity'])
+        table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
+        self.M = pd.concat([table, self.M], axis=0, copy=False)
         self.M = pd.DataFrame.dropna(self.M)
         self.M = self.M.drop_duplicates()
+        self.M.sort_values(by="TimeString", inplace=True)
+        self.M = pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
         self.save()
+        os.remove(filename)
         return self.M
+    #saves dataframe
     def save(self):
         index = Index()
         row = index.recent()
         number = row[0]
         name = row[1]
-        if self.isduplicate(number):
+        if index.isduplicate(number):
             index.remove()
         try:
             with open(name + ".pickle", "wb") as f:
                 pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
         except Exception as ex:
             print("Error during pickling object (Possibly unsupported): ", ex)
+    #loads dataframe
     def load(self):
         number = input("Project Number (###):")
         index = Index()
@@ -36,19 +48,25 @@ class Data():
                 return pickle.load(f)
         except Exception as ex:
             print("Error during unpickling object (Possibly unsupported): ", ex)
+    #returns name of dataframe
+    def name(self):
+        index = Index()
+        row = index.recent()[1]
+        return row
+    #sorts dataframe by date
+    def sort(self):
+        self.M.sort_values(by="TimeString", inplace=True)
+        self.M = pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
+        self.save()
 
-def upload(filename):
-    df = pd.read_csv(filename, delimiter=';', low_memory=False, decimal=',')
-    df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
-    df = df.drop(columns=['Time_ms', 'Validity'])
-    table = pd.pivot_table(data=df, index=['VarName','TimeString'])
-    return table
 
-
+#index object for pickling that stores project numbers and names (called by Data() above)
 class Index():
+    #initializes index
     def __init__(self):
         index = self.load()
         self.M = index.display()
+    #adds row to index
     def add(self,*row):
         if len(row)==0:
             number = input("Project Number (###):")
@@ -57,12 +75,14 @@ class Index():
         self.M.append(row)
         self.save()
         return self.M
+    #saves index
     def save(self):
         try:
             with open("index.pickle", "wb") as f:
                 pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
         except Exception as ex:
             print("Error during pickling object (Possibly unsupported): ", ex)
+    #loads index
     def load(self):
         try:
             with open('index.pickle', "rb") as f:
@@ -82,13 +102,19 @@ class Index():
             name = input("Project Number")
             self.add(number, name)
             return name
+    #returns the last row
     def recent(self):
-        return self.M[-1]
+        row = self.M[-1]
+        row = row[0]
+        return row
+    #removes the last row
     def remove(self):
         self.M = self.M[0:-1]
         self.save()
+    #returns the index
     def display(self):
         return self.M
+    #checks for duplicates in the index, returns true if there are duplicates
     def isduplicate(self,number):
         store = 0
         for r in self.M:
