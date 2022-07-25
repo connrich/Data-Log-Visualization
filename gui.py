@@ -14,6 +14,7 @@ from gui_resources.graph_widget import GraphWidget
 from gui_resources.data_selection_widget import DataSelectionWidget, DataSet
 from gui_resources.settings_window import SettingsWindow
 from gui_resources.style import StyleSheet as SS
+from gui_resources.error_message import ErrorMessage
 
 
 
@@ -155,12 +156,21 @@ class MainWindow(QMainWindow):
         if filetype == 'pickle':
             pass
         elif filetype == 'csv':
-            # Read the CSV file at the path
-            df = pd.read_csv(path, delimiter=';', low_memory=False, decimal=',')
-            # Convert times to Pandas TimeStamp
-            df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
-            # Convert times to UNIX integer format 
-            df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+            try:
+                # Read the CSV file at the path
+                df = pd.read_csv(path, 
+                                delimiter=self.settings['delimiter'],
+                                decimal=self.settings['decimal'], 
+                                low_memory=False)
+                # Convert times to Pandas TimeStamp
+                df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
+                # Convert times to UNIX integer format 
+                df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+            except Exception as ex:
+                ErrorMessage(f"Failed to load csv file. Check the correct delimiter and decimal character have been selected in settings. \n \
+                            Current delimiter:   {self.settings['delimiter']} \n \
+                            Current decimal:   {self.settings['decimal']}")
+                return
         else:
             print('wrong file type')
             return
