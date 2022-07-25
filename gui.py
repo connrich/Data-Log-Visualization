@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
-                            QAction, QFileDialog, QScrollArea
+                            QAction, QFileDialog, QScrollArea, QToolBar, \
+                            QCheckBox, QPushButton
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 import pyqtgraph as pg
@@ -40,6 +41,9 @@ class MainWindow(QMainWindow):
         # Constructs top menu 
         self.constructMenu()
 
+        # Constructs tool bar
+        self.constructToolBar()
+
         # Initialize data structures
         self.loadedData = {}
 
@@ -58,7 +62,7 @@ class MainWindow(QMainWindow):
         self.SettingsWindow = SettingsWindow(settings=self.settings)
         # self.SettingsWindow.setWindowIcon(QIcon(os.path.join(os.path.dirname(__file__), 'Resources\\SettingsGear.png')))
 
-    def constructDataSelectionDock(self):
+    def constructDataSelectionDock(self) -> None:
         '''
         Initial construction for data selection dock widget
         '''
@@ -85,7 +89,7 @@ class MainWindow(QMainWindow):
         # Place the data selection widget in the scroll area 
         self.DockScrollArea.setWidget(self.DataSelectionWidget)
     
-    def constructMenu(self):
+    def constructMenu(self) -> None:
         '''
         Initial construction for menu
         '''
@@ -110,8 +114,33 @@ class MainWindow(QMainWindow):
         self.dataSelectionShow = QAction('Open Data Selection')
         self.dataSelectionShow.triggered.connect(self.DataSelectionDock.show)
         self.MenuBar.addAction(self.dataSelectionShow)
+    
+    def constructToolBar(self):
+        '''
+        Initial construction for tool bar
+        '''
+        # Create tool bar
+        self.ToolBar = QToolBar()
+        self.addToolBar(self.ToolBar)
 
-    def loadData(self, path):
+        # Scale to fit all data in graph view
+        self.AutoScale = QPushButton('Auto Scale')
+        self.AutoScale.clicked.connect(self.GraphWidget.getViewBox().autoRange)
+        self.ToolBar.addWidget(self.AutoScale)
+        self.ToolBar.addSeparator()
+
+        # Freeze x axis zooming
+        self.LockXAxis = QCheckBox('Freeze X axis')
+        self.LockXAxis.clicked.connect(lambda: self.GraphWidget.setMouseEnabled(x=(not self.LockXAxis.isChecked())))
+        self.ToolBar.addWidget(self.LockXAxis)
+
+        # Feeze y axis zooming 
+        self.LockYAxis = QCheckBox('Freeze Y axis')
+        self.LockYAxis.clicked.connect(lambda: self.GraphWidget.setMouseEnabled(y=(not self.LockYAxis.isChecked())))
+        self.ToolBar.addWidget(self.LockYAxis)
+        self.ToolBar.addSeparator()
+
+    def loadData(self, path: str) -> None:
         '''
         Loads new CSV data into the application
         Clears the previously loaded data
@@ -146,7 +175,7 @@ class MainWindow(QMainWindow):
             self.loadedData[name] = table.loc[(name, )]
             self.DataSelectionWidget.addDataSet(name, self.loadedData[name], self.GraphWidget)
 
-    def clearLoadedDatasets(self):
+    def clearLoadedDatasets(self) -> None:
         '''
         Clears all loaded data
         '''
