@@ -7,9 +7,9 @@ import sys
 import time
 import os
 import pandas as pd
-from data_object import Data
-from data_object import load
 
+# Custom library imports
+from data_object import Data, load
 from generate_plot import generate_plot
 
 
@@ -22,7 +22,7 @@ username = 'Administrator'
 password = 'admin'
 
 # Names of files to download 
-csv_names = ['System_Sensor_log0.csv']
+csv_names = ['System_Sensor_log0.csv', 'NMR_Flow0.csv']
 
 
 
@@ -44,7 +44,7 @@ def download_log(args):
                 os.listdir(download_path)]):
             time.sleep(2)
 
-    # Downloads files to the current working directory
+    # Download files to the current working directory
     download_path = os.getcwd()
 
     # Start a service using the Chrome driver
