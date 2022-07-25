@@ -59,7 +59,7 @@ class SettingsWindow(QWidget):
         '''
         # Populate current settings to window
         self.DelimiterSelection.setText(self.settings['delimiter'])
-        self.CommaSelection.setText(self.settings['comma'])
+        self.DecimalSelection.setText(self.settings['decimal'])
 
         # Show the settings window 
         self.show()
@@ -71,7 +71,7 @@ class SettingsWindow(QWidget):
         '''
         # Save csv import settings
         self.settings['delimiter'] = self.DelimiterSelection.text()
-        self.settings['comma'] = self.CommaSelection.text()
+        self.settings['decimal'] = self.DecimalSelection.text()
 
         # Write settings to the settings file
         with open(os.path.join(os.path.dirname(__file__), 'settings.json'), 'w+') as json_file:
@@ -90,10 +90,10 @@ class SettingsWindow(QWidget):
         self.CSVLayout.addWidget(self.DelimiterSelection, 0, 1)
 
         # Input for setting the CSV comma character
-        self.CommaSelectionLabel = QLabel('Comma')
-        self.CSVLayout.addWidget(self.CommaSelectionLabel, 1, 0)
-        self.CommaSelection = QLineEdit()
-        self.CSVLayout.addWidget(self.CommaSelection, 1, 1)
+        self.DecimalSelectionLabel = QLabel('Decimal')
+        self.CSVLayout.addWidget(self.DecimalSelectionLabel, 1, 0)
+        self.DecimalSelection = QLineEdit()
+        self.CSVLayout.addWidget(self.DecimalSelection, 1, 1)
 
         return self.CSVLayout
 
