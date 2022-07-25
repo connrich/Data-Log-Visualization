@@ -1,3 +1,4 @@
-import data_object as data
+from data_object import Data,Index
 
-utrecht = data.load()
+utrecht = Data()
+print(utrecht.display())

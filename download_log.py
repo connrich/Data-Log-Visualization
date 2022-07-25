@@ -9,7 +9,7 @@ import os
 import pandas as pd
 
 # Custom library imports
-from data_object import Data, load
+from data_object import Data,Index
 from generate_plot import generate_plot
 
 
@@ -97,7 +97,7 @@ def download_log(args):
     for name in csv_names:
         generate_plot(['', name])
 
-    utrecht = load()
+    utrecht = Data()
     utrecht.merge(csv_names[0])
 
 

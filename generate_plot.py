@@ -8,7 +8,7 @@ from data_object import load
 
 def generate_plot(args):
 
-    utrecht = load()
+    utrecht = Data()
     table = utrecht.display()
     dic = {}
 
