@@ -94,7 +94,7 @@ def download_log(args):
     driver.quit()
 
 
-    file = Data()
+    file = Data(607)
     file.merge(csv_names[0])
 
 

@@ -9,7 +9,7 @@ import pandas as pd
 from datetime import datetime
 import os
 import json
-
+from data_object import Data
 from gui_resources.graph_widget import GraphWidget
 from gui_resources.data_selection_widget import DataSelectionWidget, DataSet
 from gui_resources.settings_window import SettingsWindow
@@ -154,7 +154,11 @@ class MainWindow(QMainWindow):
 
         # Import depending on file type
         if filetype == 'pickle':
-            pass
+            file = Data(607)
+            #loads pivoted dataframe
+            df = file.display()
+            #dates to UNIX
+            df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
         elif filetype == 'csv':
             try:
                 # Read the CSV file at the path

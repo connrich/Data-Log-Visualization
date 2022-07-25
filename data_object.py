@@ -11,29 +11,32 @@ class Data():
             df = pd.read_csv(filename, delimiter=';', low_memory=False, decimal=',')
             df = pd.DataFrame.dropna(df)
             df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
-            df = df.drop(columns=['Time_ms', 'Validity'])
-            self.M = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
+            self.M = df.drop(columns=['Time_ms', 'Validity'])
+            self.save()
+            os.remove(filename)
         else:
             self.M = file.display()
+            self.save()
     #blank function that returns dataframe
     def display(self):
         return self.M
-    def plot(self):
-        self.M['TimeString'] = self.M['TimeString'].map(pd.Timestamp.timestamp)
-        self.M = pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
+    def pivot(self):
+        return pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
+    def clean(self):
+        self.M = pd.DataFrame.dropna(self.M)
+        self.M = self.M.drop_duplicates(subset = ['TimeString','VarName'])
+        self.M.sort_values(by="TimeString", inplace=True)
+        self.save()
         return self.M
     #merges current data frame with new data, deletes repeats
     def merge(self,filename):
         df = pd.read_csv(filename, delimiter=';', low_memory=False, decimal=',')
-        df = pd.DataFrame.dropna(df)
         df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
         df = df.drop(columns=['Time_ms', 'Validity'])
-        table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
-        self.M = pd.concat([table, self.M], axis=0, copy=False)
-        self.M.sort_values(by="TimeString", inplace=True)
-        self.M = pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
-        self.save()
+        self.M = pd.concat([df, self.M], axis=0, copy=False)
+        self.clean()
         os.remove(filename)
+        self.save()
         return self.M
     #saves dataframe
     def save(self):
