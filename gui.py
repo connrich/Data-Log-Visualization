@@ -119,13 +119,22 @@ class MainWindow(QMainWindow):
         # Clear old data before loading new data
         self.clearLoadedDatasets()
 
-        # Read the CSV file at the path
-        df = pd.read_csv(path, delimiter=';', low_memory=False, decimal=',')
+        # Get the type of file
+        filetype = path.split('/')[-1].split('.')[-1]
 
-        # Convert times to Pandas TimeStamp
-        df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
-        # Convert times to UNIX integer format 
-        df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+        # Import depending on file type
+        if filetype == 'pickle':
+            pass
+        elif filetype == 'csv':
+            # Read the CSV file at the path
+            df = pd.read_csv(path, delimiter=';', low_memory=False, decimal=',')
+            # Convert times to Pandas TimeStamp
+            df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
+            # Convert times to UNIX integer format 
+            df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+        else:
+            print('wrong file type')
+            return
 
         # Pivot the dataframe so it is easier to select data by tag name
         table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
