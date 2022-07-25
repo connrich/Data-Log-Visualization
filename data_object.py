@@ -4,21 +4,32 @@ import os
 #Data object for saving pandas dataframes
 class Data():
     #initialize by loading file
-    def __init__(self):
-        file = self.load()
-        self.M = file.display()
+    def __init__(self, number):
+        file = self.load(number)
+        if file == None:
+            filename = input("File Name: ")
+            df = pd.read_csv(filename, delimiter=';', low_memory=False, decimal=',')
+            df = pd.DataFrame.dropna(df)
+            df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
+            df = df.drop(columns=['Time_ms', 'Validity'])
+            self.M = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
+        else:
+            self.M = file.display()
     #blank function that returns dataframe
     def display(self):
+        return self.M
+    def plot(self):
+        self.M['TimeString'] = self.M['TimeString'].map(pd.Timestamp.timestamp)
+        self.M = pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
         return self.M
     #merges current data frame with new data, deletes repeats
     def merge(self,filename):
         df = pd.read_csv(filename, delimiter=';', low_memory=False, decimal=',')
+        df = pd.DataFrame.dropna(df)
         df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
         df = df.drop(columns=['Time_ms', 'Validity'])
         table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
         self.M = pd.concat([table, self.M], axis=0, copy=False)
-        self.M = pd.DataFrame.dropna(self.M)
-        self.M = self.M.drop_duplicates()
         self.M.sort_values(by="TimeString", inplace=True)
         self.M = pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
         self.save()
@@ -38,16 +49,19 @@ class Data():
         except Exception as ex:
             print("Error during pickling object (Possibly unsupported): ", ex)
     #loads dataframe
-    def load(self):
-        number = input("Project Number (###):")
+    def load(self,number):
+        number = int(number)
         index = Index()
-        name = index.search(int(number))
+        name, boo = index.search(int(number))
         index.add([int(number), name])
-        try:
-            with open(name+'.pickle', "rb") as f:
-                return pickle.load(f)
-        except Exception as ex:
-            print("Error during unpickling object (Possibly unsupported): ", ex)
+        if boo:
+            try:
+                with open(name+'.pickle', "rb") as f:
+                    return pickle.load(f)
+            except Exception as ex:
+                print("Error during unpickling object (Possibly unsupported): ", ex)
+        else:
+            return None
     #returns name of dataframe
     def name(self):
         index = Index()
@@ -97,11 +111,10 @@ class Index():
                     row = r
                     break
         if len(row)>0:
-            return row[1]
+            return row[1], True
         if len(row)==0:
-            name = input("Project Number")
-            self.add(number, name)
-            return name
+            name = input("Project Name: ")
+            return name, False
     #returns the last row
     def recent(self):
         row = self.M[-1]

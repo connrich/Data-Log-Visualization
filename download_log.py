@@ -22,7 +22,7 @@ username = 'Administrator'
 password = 'admin'
 
 # Names of files to download 
-csv_names = ['System_Sensor_log0.csv', 'NMR_Flow0.csv']
+csv_names = ['System_Sensor_log0.csv']
 
 
 
@@ -93,12 +93,10 @@ def download_log(args):
     # Ends the session by closing all windows and terminating the driver 
     driver.quit()
 
-    # Create html plots
-    for name in csv_names:
-        generate_plot(['', name])
 
-    utrecht = Data()
-    utrecht.merge(csv_names[0])
+    file = Data()
+    file.merge(csv_names[0])
+
 
 
 
