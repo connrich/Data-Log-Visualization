@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
                             Current decimal:   {self.settings['decimal']}")
                 return
         else:
-            print('wrong file type')
+            ErrorMessage(f'Invalid file type: {filetype} \n Only accepts csv or pickle data frames')
             return
 
         # Pivot the dataframe so it is easier to select data by tag name
