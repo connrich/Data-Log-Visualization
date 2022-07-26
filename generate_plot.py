@@ -8,8 +8,8 @@ from data_object import Data
 
 def generate_plot(args):
 
-    file = Data()
-    table = file.display()
+    file = Data(607)
+    table = file.pivot()
     dic = {}
 
     for i in table.index.unique(level='VarName'):

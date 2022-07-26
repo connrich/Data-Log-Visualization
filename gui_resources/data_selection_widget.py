@@ -2,9 +2,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, \
                             QPushButton, QColorDialog
 from pandas import DataFrame
+import pandas as pd
 import pyqtgraph as pg
 import sys
 import random
+import numpy as np
+import datetime
 
 from gui_resources.style import StyleSheet as SS
 from gui_resources.style import Font
@@ -54,7 +57,7 @@ class DataSet(QHBoxLayout):
         self.addWidget(self.color)
 
         # Future variable for trendline management
-        self.trendline = trendline    
+        self.trendline = trendline
     
     def setColor(self, color: tuple) -> None:
         '''
@@ -66,7 +69,33 @@ class DataSet(QHBoxLayout):
                                     border-radius: 5px; \
                                     }};") 
         self.PlotDataItem.setPen(pg.mkPen(color, width=2))
-    
+
+    def trendline(self,data,key,startdate,enddate):
+        '''
+        Creates a trendline for a subset of the data
+        '''
+        #For Connor:
+        #Takes in unpivoted pandas dataframe, key (as a string), and start and end date (datetime objects)
+        #returns x and y lists, x is a list of datetime objects
+        table = pd.pivot_table(data=data, index=['VarName', 'TimeString'])
+        dic = {}
+        for i in table.index.unique(level='VarName'):
+            dic[i] = table.loc[(i,)]
+
+        fully = table['VarValue']['PT270_Value'].to_list()
+        fullx = (dic['PT270_Value'].index).to_pydatetime()
+        y = []
+        x = []
+        for i in range(0, len(fullx)):
+            if startdate <= fullx[i] <= enddate:
+                x.append(fullx[i])
+                y.append(fully[i])
+        x1 = np.arange(0, len(x))
+        A = np.vstack([x1, np.ones(len(x))])
+        m, b = np.linalg.lstsq(A.T, y, rcond=None)[0]
+        trend = m*x1+b
+        return x, trend
+
     def colorSelectionMenu(self) -> None:
         '''
         Opens a QColorDialog color picker for selecting display color
