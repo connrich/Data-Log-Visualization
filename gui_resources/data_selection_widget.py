@@ -82,8 +82,8 @@ class DataSet(QHBoxLayout):
         for i in table.index.unique(level='VarName'):
             dic[i] = table.loc[(i,)]
 
-        fully = table['VarValue']['PT270_Value'].to_list()
-        fullx = (dic['PT270_Value'].index).to_pydatetime()
+        fully = table['VarValue'][key].to_list()
+        fullx = (dic[key].index).to_pydatetime()
         y = []
         x = []
         for i in range(0, len(fullx)):

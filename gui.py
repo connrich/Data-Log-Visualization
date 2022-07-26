@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
 
         # Try formatting x value to a date/time format
         try:
-            x_val = str(datetime.fromtimestamp(p.x()).strftime('%d.%m.%Y %H:%M:%S'))
+            x_val = str(datetime.fromtimestamp(p.x()).strftime('%m/%d/%Y %H:%M:%S'))
         except:
             x_val = p.x()
         
