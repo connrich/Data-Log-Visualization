@@ -48,7 +48,7 @@ class TimeAxisItem(pg.AxisItem):
         
         # Set string formatting
         if datetime_format is None:
-            self.str_format = '%d.%m.%Y %H:%M:%S'
+            self.str_format = '%H:%M:%S \n %d.%m.%Y '
         else:
             self.str_format = datetime_format
 
