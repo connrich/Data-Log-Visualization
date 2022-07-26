@@ -1,14 +1,28 @@
+'''
+Standard Python packages
+'''
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
-                            QAction, QFileDialog, QScrollArea, QToolBar, \
-                            QCheckBox, QPushButton
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt
-import pyqtgraph as pg
-import pandas as pd
 from datetime import datetime
 import os
 import json
+
+'''
+PyQt packages
+'''
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
+                            QAction, QFileDialog, QScrollArea, QToolBar, \
+                            QCheckBox, QPushButton
+from PyQt5.QtCore import Qt, QPointF
+import pyqtgraph as pg
+
+'''
+Data analysis packages
+'''
+import pandas as pd
+
+'''
+Custom packages
+'''
 from data_object import Data
 from gui_resources.graph_widget import GraphWidget
 from gui_resources.data_selection_widget import DataSelectionWidget, DataSet
@@ -22,7 +36,7 @@ class MainWindow(QMainWindow):
     '''
     The main GUI window used for the application
     '''
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         # Global application settings
@@ -30,10 +44,11 @@ class MainWindow(QMainWindow):
 
         # Main window settings
         self.setWindowTitle('Trends')
-        self.setMinimumSize(800, 800)
 
         # Add graphing widget
         self.GraphWidget = GraphWidget()
+        # Connect slot for getting coordinates when hovering over graph 
+        self.GraphWidget.getPlotItem().scene().sigMouseMoved.connect(self.onMouseMoved)
         self.setCentralWidget(self.GraphWidget)
 
         # Construct the dock used for selecting data sets to display
@@ -116,7 +131,7 @@ class MainWindow(QMainWindow):
         self.dataSelectionShow.triggered.connect(self.DataSelectionDock.show)
         self.MenuBar.addAction(self.dataSelectionShow)
     
-    def constructToolBar(self):
+    def constructToolBar(self) -> None:
         '''
         Initial construction for tool bar
         '''
@@ -196,17 +211,36 @@ class MainWindow(QMainWindow):
         self.loadedData = {}
         self.DataSelectionWidget.clearDatasets()
 
+    def onMouseMoved(self, point: QPointF) -> None:
+        '''
+        Slot for getting mouse coordinates over the graph widget
+        '''
+        # Get a point object containing coordinates mapped to the graph view space
+        p = self.GraphWidget.getPlotItem().vb.mapSceneToView(point)
+
+        # Try formatting x value to a date/time format
+        try:
+            x_val = str(datetime.fromtimestamp(p.x()).strftime('%d.%m.%Y %H:%M:%S'))
+        except:
+            x_val = p.x()
+        
+        # Display the coordinates on the bottom status bar
+        self.statusBar().showMessage(
+                "[x], (y) = [{}],   ({:0.5f})".format(x_val, p.y())
+            )
+
 
 
 if __name__ == '__main__':
     # Helps with scaling when using two screens with diffirent DPI
-    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
 
     # Initialize application
     app = QApplication(sys.argv)
     # Create window
     MainWindow = MainWindow()
     MainWindow.show()
+
     # Terminated when the application is closed 
     sys.exit(app.exec())
