@@ -56,7 +56,6 @@ class TimeAxisItem(pg.AxisItem):
         '''
         Returns a list of date/time formatted strings for display on axis
         '''
-        print(spacing)
         try: 
             return [str(datetime.fromtimestamp(value).strftime(self.str_format)) for value in values]
         except:
