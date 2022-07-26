@@ -48,7 +48,7 @@ class TimeAxisItem(pg.AxisItem):
         
         # Set string formatting
         if datetime_format is None:
-            self.str_format = '%d.%m.%Y %H:%M:%S'
+            self.str_format = '%H:%M:%S \n %d.%m.%Y '
         else:
             self.str_format = datetime_format
 
@@ -56,6 +56,7 @@ class TimeAxisItem(pg.AxisItem):
         '''
         Returns a list of date/time formatted strings for display on axis
         '''
+        print(spacing)
         try: 
             return [str(datetime.fromtimestamp(value).strftime(self.str_format)) for value in values]
         except:
