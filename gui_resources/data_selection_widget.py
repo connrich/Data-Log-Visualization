@@ -24,9 +24,6 @@ class DataSelectionWidget(QWidget):
         # Save pointer to the corresponding graph
         self.graph = graph
 
-        # Connect range change event to trigger adaptive trendline resizing
-        self.graph.sigRangeChanged.connect(self.updateTrendline)
-
         # Set layout
         self.layout = QVBoxLayout()
         self.layout.setAlignment(Qt.AlignTop)
