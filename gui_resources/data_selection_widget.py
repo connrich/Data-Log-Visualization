@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, \
-                            QPushButton, QColorDialog
+                            QPushButton, QColorDialog, QCheckBox
 from pandas import DataFrame
 import pandas as pd
 import pyqtgraph as pg
@@ -12,6 +12,46 @@ import datetime
 from gui_resources.style import StyleSheet as SS
 from gui_resources.style import Font
 
+
+
+class DataSelectionWidget(QWidget):
+    '''
+    Widget subclass for containing the list of loaded data sets
+    '''
+    def __init__(self, graph: pg.PlotWidget) -> None:
+        super().__init__()
+
+        # Save pointer to the corresponding graph
+        self.graph = graph
+
+        # Connect range change event to trigger adaptive trendline resizing
+        self.graph.sigRangeChanged.connect(self.updateTrendlines)
+
+        # Set layout
+        self.layout = QVBoxLayout()
+        self.layout.setAlignment(Qt.AlignTop)
+        self.setLayout(self.layout)
+
+        # Settings
+        self.setMinimumWidth(200)
+    
+    def addDataSet(self, name: str, data: DataFrame, graph: pg.PlotWidget,
+                   color: tuple=None, trendline: bool=False) -> None:
+        '''
+        Add new data set object to the widget display using provided parameters
+        '''
+        self.layout.addLayout(
+            DataSet(
+                name, data, graph, color=color, trendline=trendline
+            )
+        )
+    
+    def clearDatasets(self) -> None:
+        '''
+        Iterates through the data set objects in the widget and deletes them
+        '''
+        for i in reversed(range(self.layout.count())):
+            self.layout.itemAt(i).delete()
 
 
 
@@ -27,6 +67,25 @@ class DataSet(QHBoxLayout):
         # Pointer to parent graph
         self.graph = graph
 
+        # Construct a plot item that can be shown/hidden on the parent graph
+        self.PlotDataItem = pg.PlotDataItem(
+            data.index,
+            data['VarValue'].to_list(),
+            )
+
+        # Construct display color widget
+        self.color = QPushButton()
+        self.color.setStyleSheet("QPushButton:hover{border: 1px solid rgb(0, 0, 0);}")
+        self.color.setFixedSize(20, 20)
+        if type(color) == tuple:
+            self.setColor(color)
+        else:
+            self.setColor((random.randint(0, 255), 
+                            random.randint(0, 255), 
+                            random.randint(0, 255)))
+        self.color.clicked.connect(self.colorSelectionMenu)
+        self.addWidget(self.color)
+
         # Construct name widget
         self.name = QPushButton()
         self.name.setFixedHeight(20)
@@ -38,42 +97,57 @@ class DataSet(QHBoxLayout):
         self.name.clicked.connect(lambda: self.showData(self.name.isChecked()))
         self.addWidget(self.name)
 
-        # Construct a plot item that can be shown/hidden on the parent graph
-        self.PlotDataItem = pg.PlotDataItem(
-            data.index,
-            data['VarValue'].to_list(),
-            )
+        # Check box for displaying a trendline
+        self.TrendlineActive = QCheckBox('TL')
+        self.TrendlineActive.clicked.connect(self.trendlineButtonClicked)
+        self.addWidget(self.TrendlineActive)
 
-        # Construct display color widget
-        self.color = QPushButton()
-        self.color.setFixedSize(20, 20)
-        if type(color) == tuple:
-            self.setColor(color)
+        # Trendline data structure
+        if trendline:
+            self.setTrendline()
         else:
-            self.setColor((random.randint(0, 255), 
-                            random.randint(0, 255), 
-                            random.randint(0, 255)))
-        self.color.clicked.connect(self.colorSelectionMenu)
-        self.addWidget(self.color)
+            self.trendline = None
 
-        # Future variable for trendline management
-        self.trendline = trendline
+        # Signal/slot for updating trendline when x axis is rescaled
+        self.graph.sigRangeChanged.connect(self.updateTrendline)
     
     def setColor(self, color: tuple) -> None:
         '''
         Set the display color for the data set
         '''
         r, g, b = color
-        self.color.setStyleSheet(f"QPushButton {{ \
-                                    background-color: rgb({r}, {g}, {b}); \
-                                    border-radius: 5px; \
-                                    }};") 
         self.PlotDataItem.setPen(pg.mkPen(color, width=2))
+        self.color.setStyleSheet(f"QPushButton {{ \
+            background-color: rgb({r}, {g}, {b}); \
+            border-radius: 5px; \
+            }} \
+            QPushButton:hover{{ \
+            border: 1px solid rgb(0, 0, 0); \
+            }};") 
 
-    def trendline(self,data,key,startdate,enddate):
+    def updateTrendline(self) -> None:
+        '''
+        Called when x range is changed. Updates the trendline to match currently shown data
+        '''
+        if self.trendline is None:
+            return
+        else:
+            self.removeTrendline()
+            self.setTrendline(*self.graph.xaxis.range)
+
+    def setTrendline(self, startdate: float, enddate: float) -> None:
         '''
         Creates a trendline for a subset of the data
         '''
+
+        # Please make the function use Unix time floats instead of datetime objects
+
+        # Here are variables for the data
+        # x and y data with type = numpy.ndarray
+        x_data = self.PlotDataItem.xData
+        y_data = self.PlotDataItem.yData
+
+
         #For Connor:
         #Takes in unpivoted pandas dataframe, key (as a string), and start and end date (datetime objects)
         #returns x and y lists, x is a list of datetime objects
@@ -94,7 +168,28 @@ class DataSet(QHBoxLayout):
         A = np.vstack([x1, np.ones(len(x))])
         m, b = np.linalg.lstsq(A.T, y, rcond=None)[0]
         trend = m*x1+b
-        return x, trend
+
+        # Save the trendline to the object and plot on graph
+        self.trendline = pg.PlotDataItem(x, trend)
+        self.graph.addItem(self.trendline)
+    
+    def removeTrendline(self) -> None:
+        '''
+        Removes the trendline from the graph and object
+        '''
+        if self.trendline is not None:
+            self.graph.removeItem(self.trendline)
+            self.trendline = None
+    
+    def trendlineButtonClicked(self) -> None:
+        '''
+        Slot for activating/deactivating a trendline
+        '''
+        if self.TrendlineActive.isChecked():
+            x_range = self.graph.xaxis.range
+            self.setTrendline(*x_range)
+        else:
+            self.removeTrendline()
 
     def colorSelectionMenu(self) -> None:
         '''
@@ -133,44 +228,6 @@ class DataSet(QHBoxLayout):
         for i in reversed(range(self.count())):
             self.itemAt(i).widget().deleteLater()
         self.deleteLater()
-
-
-
-class DataSelectionWidget(QWidget):
-    '''
-    Widget subclass for containing the list of loaded data sets
-    '''
-    def __init__(self, graph: pg.PlotWidget) -> None:
-        super().__init__()
-
-        # Save pointer to the corresponding graph
-        self.graph = graph
-
-        # Set layout
-        self.layout = QVBoxLayout()
-        self.layout.setAlignment(Qt.AlignTop)
-        self.setLayout(self.layout)
-
-        # Settings
-        self.setMinimumWidth(130)
-    
-    def addDataSet(self, name: str, data: DataFrame, graph: pg.PlotWidget,
-                   color: tuple=None, trendline: bool=False) -> None:
-        '''
-        Add new data set object to the widget display using provided parameters
-        '''
-        self.layout.addLayout(
-            DataSet(
-                name, data, graph, color=color, trendline=trendline
-            )
-        )
-    
-    def clearDatasets(self) -> None:
-        '''
-        Iterates through the data set objects in the widget and deletes them
-        '''
-        for i in reversed(range(self.layout.count())):
-            self.layout.itemAt(i).delete()
 
 
 
