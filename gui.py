@@ -91,7 +91,7 @@ class MainWindow(QMainWindow):
         self.DataSelectionDock.setAllowedAreas(
             Qt.DockWidgetArea.RightDockWidgetArea |
             Qt.DockWidgetArea.LeftDockWidgetArea
-        )
+            )
 
         # Construct scrollable area for data sets
         self.DockScrollArea = QScrollArea()
@@ -122,8 +122,7 @@ class MainWindow(QMainWindow):
         self.loadDataAction = QAction('Load Dataset')
         self.loadDataAction.triggered.connect(
             lambda: self.loadData(QFileDialog.getOpenFileName()[0])
-        )
-        # lambda: self.loadData(QFileDialog.getOpenFileName()[0].split('/')[-1])
+            )
         self.MenuBar.addAction(self.loadDataAction)
 
         # Add action for showing data selection widget
