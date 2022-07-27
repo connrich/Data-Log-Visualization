@@ -147,18 +147,40 @@ class DataSet(QHBoxLayout):
         # Trim data to x axis range
         y1 = []
         x1 = []
+        xrange = end-start
+        xpad = xrange*.05
         for i in range(0, len(x_data)):
-            if start <= x_data[i] <= end:
+            if start-xpad <= x_data[i] <= end+xpad:
                 x1.append(x_data[i])
                 y1.append(y_data[i])
+        xmid = int((len(x1))/2)
 
         # Trim data to y axis range
-        y = []
-        x = []
-        for i in range(0, len(y1)):
-            if ymin <= y1[i] <= ymax:
-                x.append(x1[i])
-                y.append(y1[i])
+        yupper = []
+        xupper = []
+        yrange = ymax-ymin
+        ypad = yrange*.05
+        for i in range(xmid, len(x1)):
+            if ymin-ypad <= y1[i] <= ymax+ypad:
+                xupper.append(x1[i])
+                yupper.append(y1[i])
+            else:
+                break
+        xtemp = []
+        ytemp = []
+        for i in range(xmid,-1,-1):
+            if ymin*0.95 <= y1[i] <= ymax*1.05:
+                xtemp.append(x1[i])
+                ytemp.append(y1[i])
+            else:
+                break
+        xlower = []
+        ylower = []
+        for i in range(len(xtemp)-1, -1,-1):
+            xlower.append(xtemp[i])
+            ylower.append(ytemp[i])
+        x = xlower+xupper
+        y = ylower+yupper
 
         # Generate trendline
         x2 = np.arange(0, len(x))
