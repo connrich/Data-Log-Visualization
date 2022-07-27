@@ -7,7 +7,7 @@ import pyqtgraph as pg
 import sys
 import random
 import numpy as np
-import datetime
+from datetime import datetime
 
 from gui_resources.style import StyleSheet as SS
 from gui_resources.style import Font
@@ -25,7 +25,7 @@ class DataSelectionWidget(QWidget):
         self.graph = graph
 
         # Connect range change event to trigger adaptive trendline resizing
-        self.graph.sigRangeChanged.connect(self.updateTrendlines)
+        self.graph.sigRangeChanged.connect(self.updateTrendline)
 
         # Set layout
         self.layout = QVBoxLayout()
@@ -135,7 +135,7 @@ class DataSet(QHBoxLayout):
             self.removeTrendline()
             self.setTrendline(*self.graph.xaxis.range)
 
-    def setTrendline(self, startdate: float, enddate: float) -> None:
+    def setTrendline(self, start: float, end: float) -> None:
         '''
         Creates a trendline for a subset of the data
         '''
@@ -148,22 +148,15 @@ class DataSet(QHBoxLayout):
         y_data = self.PlotDataItem.yData
 
 
-        #For Connor:
-        #Takes in unpivoted pandas dataframe, key (as a string), and start and end date (datetime objects)
-        #returns x and y lists, x is a list of datetime objects
-        table = pd.pivot_table(data=data, index=['VarName', 'TimeString'])
-        dic = {}
-        for i in table.index.unique(level='VarName'):
-            dic[i] = table.loc[(i,)]
-
-        fully = table['VarValue'][key].to_list()
-        fullx = (dic[key].index).to_pydatetime()
+        start = datetime.fromtimestamp(start()).strftime('%m/%d/%Y %H:%M:%S')
+        end = datetime.fromtimestamp(end()).strftime('%m/%d/%Y %H:%M:%S')
+        x_data = datetime.fromtimestamp(x_data()).strftime('%m/%d/%Y %H:%M:%S')
         y = []
         x = []
-        for i in range(0, len(fullx)):
-            if startdate <= fullx[i] <= enddate:
-                x.append(fullx[i])
-                y.append(fully[i])
+        for i in range(0, len(x_data)):
+            if start <= x_data[i] <= end:
+                x.append(x_data[i])
+                y.append(y_data[i])
         x1 = np.arange(0, len(x))
         A = np.vstack([x1, np.ones(len(x))])
         m, b = np.linalg.lstsq(A.T, y, rcond=None)[0]
