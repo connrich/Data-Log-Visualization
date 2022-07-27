@@ -24,6 +24,7 @@ class DataSelectionWidget(QWidget):
         # Save pointer to the corresponding graph
         self.graph = graph
 
+
         # Set layout
         self.layout = QVBoxLayout()
         self.layout.setAlignment(Qt.AlignTop)
@@ -132,7 +133,7 @@ class DataSet(QHBoxLayout):
             self.removeTrendline()
             self.setTrendline(*self.graph.xaxis.range)
 
-    def setTrendline(self, start: float, end: float) -> None:
+    def setTrendline(self, start: float, end: float, ) -> None:
         '''
         Creates a trendline for a subset of the data
         '''
@@ -145,19 +146,23 @@ class DataSet(QHBoxLayout):
         y_data = self.PlotDataItem.yData
 
 
-        start = datetime.fromtimestamp(start()).strftime('%m/%d/%Y %H:%M:%S')
-        end = datetime.fromtimestamp(end()).strftime('%m/%d/%Y %H:%M:%S')
-        x_data = datetime.fromtimestamp(x_data()).strftime('%m/%d/%Y %H:%M:%S')
-        y = []
-        x = []
+        # x_data = datetime.fromtimestamp(x_data()).strftime('%m/%d/%Y %H:%M:%S')
+        y1 = []
+        x1 = []
         for i in range(0, len(x_data)):
             if start <= x_data[i] <= end:
-                x.append(x_data[i])
-                y.append(y_data[i])
-        x1 = np.arange(0, len(x))
-        A = np.vstack([x1, np.ones(len(x))])
+                x1.append(x_data[i])
+                y1.append(y_data[i])
+        y = []
+        x = []
+        for i in range(0, len(y1)):
+            if ymin <= y1[i] <= ymax:
+                x.append(x1[i])
+                y.append(y1[i])
+        x2 = np.arange(0, len(x))
+        A = np.vstack([x2, np.ones(len(x))])
         m, b = np.linalg.lstsq(A.T, y, rcond=None)[0]
-        trend = m*x1+b
+        trend = m*x2+b
 
         # Save the trendline to the object and plot on graph
         self.trendline = pg.PlotDataItem(x, trend)

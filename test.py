@@ -19,10 +19,11 @@ enddate = datetime.datetime.strptime('2022-07-26 15:25:40','%Y-%m-%d %H:%M:%S')
 fig,ax = plt.subplots()
 fully = table['VarValue']['PT270_Value'].to_list()
 fullx = (dic['PT270_Value'].index).to_pydatetime()
+x_data = np.array((dic['PT270_Value'].index))
 
 y = []
 x = []
-for i in range(0,len(fullx)):
+for i in range(0,len(x_data)):
     if  startdate<= fullx[i] <= enddate:
         x.append(fullx[i])
         y.append(fully[i])
@@ -40,5 +41,4 @@ ax.xaxis.set_major_locator(dates.DayLocator(interval=1))    # every day
 ax.xaxis.set_major_formatter(dates.DateFormatter('\n%m-%d-%Y'))
 
 plt.legend()
-
-print(m*x1+b)
+plt.show()
