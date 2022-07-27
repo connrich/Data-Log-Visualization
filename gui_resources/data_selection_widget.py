@@ -137,28 +137,30 @@ class DataSet(QHBoxLayout):
         '''
         Creates a trendline for a subset of the data
         '''
-
-        # Please make the function use Unix time floats instead of datetime objects
-
-        # Here are variables for the data
-        # x and y data with type = numpy.ndarray
+        # x and y data currently plotted
         x_data = self.PlotDataItem.xData
         y_data = self.PlotDataItem.yData
 
+        # Currently shown y range
+        ymin, ymax = self.graph.getAxis('left').range
 
-        # x_data = datetime.fromtimestamp(x_data()).strftime('%m/%d/%Y %H:%M:%S')
+        # Trim data to x axis range
         y1 = []
         x1 = []
         for i in range(0, len(x_data)):
             if start <= x_data[i] <= end:
                 x1.append(x_data[i])
                 y1.append(y_data[i])
+
+        # Trim data to y axis range
         y = []
         x = []
         for i in range(0, len(y1)):
             if ymin <= y1[i] <= ymax:
                 x.append(x1[i])
                 y.append(y1[i])
+
+        # Generate trendline
         x2 = np.arange(0, len(x))
         A = np.vstack([x2, np.ones(len(x))])
         m, b = np.linalg.lstsq(A.T, y, rcond=None)[0]
@@ -166,6 +168,7 @@ class DataSet(QHBoxLayout):
 
         # Save the trendline to the object and plot on graph
         self.trendline = pg.PlotDataItem(x, trend)
+        self.trendline.setPen(pg.mkPen(self.getColor(), width=2, style=Qt.DashLine))
         self.graph.addItem(self.trendline)
     
     def removeTrendline(self) -> None:
@@ -180,7 +183,7 @@ class DataSet(QHBoxLayout):
         '''
         Slot for activating/deactivating a trendline
         '''
-        if self.TrendlineActive.isChecked():
+        if self.TrendlineActive.isChecked() and self.name.isChecked():
             x_range = self.graph.xaxis.range
             self.setTrendline(*x_range)
         else:
@@ -209,12 +212,14 @@ class DataSet(QHBoxLayout):
     
     def showData(self, show: bool) -> None:
         '''
-        Displays the data set on the parent graph
+        Displays the data set on the parent graph if True 
         '''
         if show:
             self.graph.addItem(self.PlotDataItem)
         else:
             self.graph.removeItem(self.PlotDataItem)
+            self.removeTrendline()
+            self.TrendlineActive.setChecked(False)
         
     def delete(self) -> None:
         '''
