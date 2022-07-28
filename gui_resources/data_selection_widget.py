@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, \
-                            QPushButton, QColorDialog, QCheckBox
+                            QPushButton, QColorDialog, QCheckBox, QLabel
 from pandas import DataFrame
 import pandas as pd
 import pyqtgraph as pg
@@ -100,6 +100,10 @@ class DataSet(QHBoxLayout):
         self.TrendlineActive.clicked.connect(self.trendlineButtonClicked)
         self.addWidget(self.TrendlineActive)
 
+        # Trendline slope and intercept if loaded
+        self.TrendlineSlopeIntercerpt = QLabel()
+        self.addWidget(self.TrendlineSlopeIntercerpt)
+
         # Trendline data structure
         if trendline:
             self.setTrendline()
@@ -188,6 +192,9 @@ class DataSet(QHBoxLayout):
         m, b = np.linalg.lstsq(A.T, y, rcond=None)[0]
         trend = m*x2+b
 
+        # Update the slope and intercept values displayed
+        self.TrendlineSlopeIntercerpt.setText('m = {:.3f} : b = {:.3f}'.format(m, b))
+
         # Save the trendline to the object and plot on graph
         self.trendline = pg.PlotDataItem(x, trend)
         self.trendline.setPen(pg.mkPen(self.getColor(), width=2, style=Qt.DashLine))
@@ -200,6 +207,7 @@ class DataSet(QHBoxLayout):
         if self.trendline is not None:
             self.graph.removeItem(self.trendline)
             self.trendline = None
+            self.TrendlineSlopeIntercerpt.setText('')
     
     def trendlineButtonClicked(self) -> None:
         '''
