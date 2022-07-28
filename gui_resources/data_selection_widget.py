@@ -148,7 +148,7 @@ class DataSet(QHBoxLayout):
         y1 = []
         x1 = []
         xrange = end-start
-        xpad = xrange*.05
+        xpad = xrange*.1
         for i in range(0, len(x_data)):
             if start-xpad <= x_data[i] <= end+xpad:
                 x1.append(x_data[i])
@@ -159,7 +159,7 @@ class DataSet(QHBoxLayout):
         yupper = []
         xupper = []
         yrange = ymax-ymin
-        ypad = yrange*.05
+        ypad = yrange*.1
         for i in range(xmid, len(x1)):
             if ymin-ypad <= y1[i] <= ymax+ypad:
                 xupper.append(x1[i])
