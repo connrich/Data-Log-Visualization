@@ -152,7 +152,7 @@ class DataSet(QHBoxLayout):
         y1 = []
         x1 = []
         xrange = end-start
-        xpad = xrange*.1
+        xpad = xrange*0
         for i in range(0, len(x_data)):
             if start-xpad <= x_data[i] <= end+xpad:
                 x1.append(x_data[i])
@@ -193,7 +193,7 @@ class DataSet(QHBoxLayout):
         trend = m*x2+b
 
         # Update the slope and intercept values displayed
-        self.TrendlineSlopeIntercerpt.setText('m = {:.3f} : b = {:.3f}'.format(m, b))
+        self.TrendlineSlopeIntercerpt.setText('m = {:.3f} : b = {:.3f}'.format(m*6, b))
 
         # Save the trendline to the object and plot on graph
         self.trendline = pg.PlotDataItem(x, trend)
