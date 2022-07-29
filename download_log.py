@@ -9,7 +9,7 @@ import os
 import pandas as pd
 
 # Custom library imports
-from data_object import Data,Index
+from data_object import Data
 from generate_plot import generate_plot
 
 

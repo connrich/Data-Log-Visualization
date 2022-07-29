@@ -88,3 +88,6 @@ class Data():
         self.M.sort_values(by="TimeString", inplace=True)
         self.M = pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
         self.save()
+    def dispname(self):
+        return self.name
+

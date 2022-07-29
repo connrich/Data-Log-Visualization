@@ -129,6 +129,8 @@ class MainWindow(QMainWindow):
         self.dataSelectionShow = QAction('Open Data Selection')
         self.dataSelectionShow.triggered.connect(self.DataSelectionDock.show)
         self.MenuBar.addAction(self.dataSelectionShow)
+
+        self.generateInfo = QAction('Generate Infographic')
     
     def constructToolBar(self) -> None:
         '''
