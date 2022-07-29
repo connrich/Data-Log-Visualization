@@ -200,8 +200,6 @@ class MainWindow(QMainWindow):
         Loads new CSV data into the application
         Clears the previously loaded data
         '''
-        # Clear old data before loading new data
-        self.clearLoadedDatasets()
 
         # Get the type of file
         filetype = path.split('/')[-1].split('.')[-1]
@@ -232,6 +230,10 @@ class MainWindow(QMainWindow):
         else:
             ErrorMessage(f'Invalid file type: {filetype} \n Only accepts csv or pickle data frames')
             return
+
+        # If load was succesful we can clear old data and the graph
+        self.clearLoadedDatasets()
+        self.GraphWidget.clear()
 
         # Pivot the dataframe so it is easier to select data by tag name
         table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
