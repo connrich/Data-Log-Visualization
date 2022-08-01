@@ -16,18 +16,18 @@ from generate_plot import generate_plot
 
 # HMI address
 address = '192.168.0.102'
-# Username for log in 
+# Username for log in
 username = 'Administrator'
 # Password for log in
 password = 'admin'
-
-# Names of files to download 
+#
+# # Names of files to download
 csv_names = ['System_Sensor_log0.csv']
-
-
-
+#
+#
+#
 def download_log(args):
-    # Custom function for waiting for elements 
+#     # Custom function for waiting for elements
     def load_then_click(xpath):
         try:
             element = WebDriverWait(driver, 20).until(
@@ -36,10 +36,10 @@ def download_log(args):
             element.click()
         except Exception as e:
             print(e)
-    
+
     # Waits until all downloads are completed
     def wait_for_downloads():
-        while any([filename.endswith(".crdownload") for filename in 
+        while any([filename.endswith(".crdownload") for filename in
                 os.listdir(download_path)]):
             time.sleep(2)
 
@@ -49,7 +49,7 @@ def download_log(args):
     # Start a service using the Chrome driver
     service = Service(executable_path='chromedriver_win32/chromedriver.exe')
 
-    # Options for the service 
+    # Options for the service
     options = webdriver.ChromeOptions()
     options.add_experimental_option('detach', True)
     prefs = {"download.default_directory": download_path}
@@ -72,7 +72,7 @@ def download_log(args):
     # Click the login button
     load_then_click('/html/body/table[2]/tbody/tr/td[1]/table/tbody/tr[1]/td/form/table/tbody/tr[3]/td/input')
 
-    # Click the file browser button 
+    # Click the file browser button
     load_then_click('/html/body/table[2]/tbody/tr/td[1]/table/tbody/tr[11]/td[3]/a')
 
     # Click the USB storage button
@@ -81,7 +81,7 @@ def download_log(args):
     # Iterate through file names and click each download link
     for name in csv_names:
         load_then_click(f"//a[text()='{name}']")
-    
+
     # Display downloads page
     driver.get("chrome://downloads/")
 
@@ -89,7 +89,7 @@ def download_log(args):
     # paths = WebDriverWait(driver, 600, 1).until(finish_downloads)
     wait_for_downloads()
 
-    # Ends the session by closing all windows and terminating the driver 
+    # Ends the session by closing all windows and terminating the driver
     driver.quit()
 
 
@@ -104,7 +104,7 @@ def download_log(args):
 
 
 
-    
+
 
 
 if __name__ == '__main__':
