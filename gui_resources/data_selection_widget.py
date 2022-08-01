@@ -24,7 +24,6 @@ class DataSelectionWidget(QWidget):
         # Save pointer to the corresponding graph
         self.graph = graph
 
-
         # Set layout
         self.layout = QVBoxLayout()
         self.layout.setAlignment(Qt.AlignTop)
@@ -216,6 +215,8 @@ class DataSet(QHBoxLayout):
         if self.TrendlineActive.isChecked() and self.name.isChecked():
             x_range = self.graph.xaxis.range
             self.setTrendline(*x_range)
+        elif not self.name.isChecked():
+            self.TrendlineActive.setChecked(False)
         else:
             self.removeTrendline()
 

@@ -11,9 +11,8 @@ PyQt packages
 '''
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
                             QAction, QFileDialog, QScrollArea, QToolBar, \
-                            QCheckBox, QPushButton
-from PyQt5.QtCore import Qt, QPointF
-import pyqtgraph as pg
+                            QCheckBox, QPushButton, QDateTimeEdit, QLabel
+from PyQt5.QtCore import Qt, QPointF, QDateTime
 
 '''
 Data analysis packages
@@ -25,7 +24,7 @@ Custom packages
 '''
 from data_object import Data
 from gui_resources.graph_widget import GraphWidget
-from gui_resources.data_selection_widget import DataSelectionWidget, DataSet
+from gui_resources.data_selection_widget import DataSelectionWidget
 from gui_resources.settings_window import SettingsWindow
 from gui_resources.style import StyleSheet as SS
 from gui_resources.error_message import ErrorMessage
@@ -62,9 +61,6 @@ class MainWindow(QMainWindow):
 
         # Initialize data structures
         self.loadedData = {}
-
-        # # Load a csv file 
-        # self.loadData('System_Sensor_log0.csv')
     
     def loadSettings(self) -> None:
         '''
@@ -85,6 +81,7 @@ class MainWindow(QMainWindow):
         # Construct dock widget
         self.DataSelectionDock = QDockWidget()
         self.DataSelectionDock.setWindowTitle('Data Selection')
+        self.DataSelectionDock.setMinimumWidth(200)
         self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.DataSelectionDock)
 
         # Set dock widget settings
@@ -130,7 +127,10 @@ class MainWindow(QMainWindow):
         self.dataSelectionShow.triggered.connect(self.DataSelectionDock.show)
         self.MenuBar.addAction(self.dataSelectionShow)
 
-        self.generateInfo = QAction('Generate Infographic')
+        # Add action for generating an infographic
+        self.generateInfographicAction = QAction('Generate Infographic')
+        self.generateInfographicAction.triggered.connect(self.generateInfographic)
+        self.MenuBar.addAction(self.generateInfographicAction)
     
     def constructToolBar(self) -> None:
         '''
@@ -157,13 +157,49 @@ class MainWindow(QMainWindow):
         self.ToolBar.addWidget(self.LockYAxis)
         self.ToolBar.addSeparator()
 
+        # Start date/time to show on graph
+        self.StartTimeLabel = QLabel('   Start Time: ')
+        self.ToolBar.addWidget(self.StartTimeLabel)
+        self.StartTime = DateTimeInput()
+        self.ToolBar.addWidget(self.StartTime)
+
+        # End date/time to show on graph
+        self.EndTimeLabel = QLabel('   End Time: ')
+        self.ToolBar.addWidget(self.EndTimeLabel)
+        self.EndTime = DateTimeInput()
+        self.ToolBar.addWidget(self.EndTime)
+
+        # Button for applying the date/time range
+        self.SetXRange = QPushButton('Set Range')
+        self.SetXRange.clicked.connect(self.scaleXRange)
+        self.ToolBar.addWidget(self.SetXRange)
+        self.ToolBar.addSeparator()
+
+    def scaleXRange(self) -> None:
+        '''
+        Scales the x axis to a particular range using UNIX timestamps
+        Connected to start and end time DateTimeEdit widgets
+        '''
+        # Get range from date/time inputs 
+        lower_unix = self.StartTime.getUNIX()
+        upper_unix = self.EndTime.getUNIX()
+
+        # Verfiy time range
+        if lower_unix > upper_unix:
+            ErrorMessage('Invalid date/time range. Check you start and end date/time.')
+            return
+
+        # Set the new x range on the graph
+        self.GraphWidget.setXRange(lower_unix, upper_unix)
+
+        # Scale y axis to fit data
+        self.GraphWidget.enableAutoRange(axis='y')
+
     def loadData(self, path: str) -> None:
         '''
         Loads new CSV data into the application
         Clears the previously loaded data
         '''
-        # Clear old data before loading new data
-        self.clearLoadedDatasets()
 
         # Get the type of file
         filetype = path.split('/')[-1].split('.')[-1]
@@ -179,9 +215,9 @@ class MainWindow(QMainWindow):
             try:
                 # Read the CSV file at the path
                 df = pd.read_csv(path, 
-                                delimiter=self.settings['delimiter'],
-                                decimal=self.settings['decimal'], 
-                                low_memory=False)
+                    delimiter=self.settings['delimiter'],
+                    decimal=self.settings['decimal'], 
+                    low_memory=False)
                 # Convert times to Pandas TimeStamp
                 df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
                 # Convert times to UNIX integer format 
@@ -194,6 +230,10 @@ class MainWindow(QMainWindow):
         else:
             ErrorMessage(f'Invalid file type: {filetype} \n Only accepts csv or pickle data frames')
             return
+
+        # If load was succesful we can clear old data and the graph
+        self.clearLoadedDatasets()
+        self.GraphWidget.clear()
 
         # Pivot the dataframe so it is easier to select data by tag name
         table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
@@ -229,7 +269,41 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage(
                 "[x], (y) = [{}],   ({:0.5f})".format(x_val, p.y())
             )
+    
+    def generateInfographic(self) -> None:
+        '''
+        Generates an infographic and displays the output
+        '''
+        # Add infographic functionality here
+        return 
 
+
+
+class DateTimeInput(QDateTimeEdit):
+    ''''
+    Custom subclass for inputting date/time
+    '''
+    def __init__(self, format:str ="MM/dd/yyyy HH:mm") -> None:
+        super().__init__()
+
+        # Set minimum size so full date and time can be seen
+        self.setMinimumWidth(100)
+
+        # Set how the date/time is displayed 
+        if format is not None: 
+            self.setDisplayFormat(format)
+        
+        # Show a calendar when clicked 
+        self.setCalendarPopup(True)
+        
+        # Default to the current date and time 
+        self.setDateTime(QDateTime.currentDateTime())
+
+    def getUNIX(self) -> int:
+        """
+        Returns the current date/time in UNIX integer format
+        """
+        return self.dateTime().toTime_t()
 
 
 if __name__ == '__main__':
