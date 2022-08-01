@@ -27,7 +27,6 @@ csv_names = ['System_Sensor_log0.csv']
 
 
 def download_log(args):
-
     # Custom function for waiting for elements 
     def load_then_click(xpath):
         try:
@@ -96,6 +95,7 @@ def download_log(args):
 
     file = Data(607)
     file.merge(csv_names[0])
+
 
 
 
