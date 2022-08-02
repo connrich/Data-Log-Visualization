@@ -140,6 +140,11 @@ class MainWindow(QMainWindow):
         self.ToolBar = QToolBar()
         self.addToolBar(self.ToolBar)
 
+        # Clear all shown data 
+        self.ClearGraph = QPushButton('Clear')
+        self.ClearGraph.clicked.connect(self.DataSelectionWidget.clearGraph)
+        self.ToolBar.addWidget(self.ClearGraph)
+
         # Scale to fit all data in graph view
         self.AutoScale = QPushButton('Auto Scale')
         self.AutoScale.clicked.connect(self.GraphWidget.getViewBox().autoRange)

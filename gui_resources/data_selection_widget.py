@@ -22,7 +22,7 @@ class DataSelectionWidget(QWidget):
         super().__init__()
 
         # Save pointer to the corresponding graph
-        self.graph = graph
+        self.GraphWidget = graph
 
         # Set layout
         self.layout = QVBoxLayout()
@@ -49,7 +49,19 @@ class DataSelectionWidget(QWidget):
         '''
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).delete()
+    
+    def clearGraph(self) -> None:
+        '''
+        Clears all lines on graph and deselects all data sets
+        '''
+        # Iterate through data sets and uncheck them 
+        for i in range(self.layout.count()):
+            dataset = self.layout.itemAt(i).layout()
+            dataset.name.setChecked(False)
+            dataset.removeTrendline()
 
+        # Clear the graph widget
+        self.GraphWidget.clear()
 
 
 class DataSet(QHBoxLayout):
@@ -62,7 +74,7 @@ class DataSet(QHBoxLayout):
         super().__init__()
 
         # Pointer to parent graph
-        self.graph = graph
+        self.GraphWidget = graph
 
         # Construct a plot item that can be shown/hidden on the parent graph
         self.PlotDataItem = pg.PlotDataItem(
@@ -110,7 +122,7 @@ class DataSet(QHBoxLayout):
             self.trendline = None
 
         # Signal/slot for updating trendline when x axis is rescaled
-        self.graph.sigRangeChanged.connect(self.updateTrendline)
+        self.GraphWidget.sigRangeChanged.connect(self.updateTrendline)
     
     def setColor(self, color: tuple) -> None:
         '''
@@ -134,18 +146,21 @@ class DataSet(QHBoxLayout):
             return
         else:
             self.removeTrendline()
-            self.setTrendline(*self.graph.xaxis.range)
+            self.setTrendline(*self.GraphWidget.xaxis.range)
 
     def setTrendline(self, start: float, end: float, ) -> None:
         '''
         Creates a trendline for a subset of the data
         '''
+        # Show trendline is active
+        self.TrendlineActive.setChecked(True)
+        
         # x and y data currently plotted
         x_data = self.PlotDataItem.xData
         y_data = self.PlotDataItem.yData
 
         # Currently shown y range
-        ymin, ymax = self.graph.getAxis('left').range
+        ymin, ymax = self.GraphWidget.getAxis('left').range
 
         # Trim data to x axis range
         y1 = []
@@ -197,14 +212,15 @@ class DataSet(QHBoxLayout):
         # Save the trendline to the object and plot on graph
         self.trendline = pg.PlotDataItem(x, trend)
         self.trendline.setPen(pg.mkPen(self.getColor(), width=2, style=Qt.DashLine))
-        self.graph.addItem(self.trendline)
+        self.GraphWidget.addItem(self.trendline)
     
     def removeTrendline(self) -> None:
         '''
         Removes the trendline from the graph and object
         '''
         if self.trendline is not None:
-            self.graph.removeItem(self.trendline)
+            self.GraphWidget.removeItem(self.trendline)
+            self.TrendlineActive.setChecked(False)
             self.trendline = None
             self.TrendlineSlopeIntercerpt.setText('')
     
@@ -213,7 +229,7 @@ class DataSet(QHBoxLayout):
         Slot for activating/deactivating a trendline
         '''
         if self.TrendlineActive.isChecked() and self.name.isChecked():
-            x_range = self.graph.xaxis.range
+            x_range = self.GraphWidget.xaxis.range
             self.setTrendline(*x_range)
         elif not self.name.isChecked():
             self.TrendlineActive.setChecked(False)
@@ -246,9 +262,9 @@ class DataSet(QHBoxLayout):
         Displays the data set on the parent graph if True 
         '''
         if show:
-            self.graph.addItem(self.PlotDataItem)
+            self.GraphWidget.addItem(self.PlotDataItem)
         else:
-            self.graph.removeItem(self.PlotDataItem)
+            self.GraphWidget.removeItem(self.PlotDataItem)
             self.removeTrendline()
             self.TrendlineActive.setChecked(False)
         
