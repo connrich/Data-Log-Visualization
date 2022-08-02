@@ -11,11 +11,14 @@
         "TE511A_Value",
         "TE511B_Value"
     ],
+    "cold_head_temperature_units": "K",
     "flow_controllers_to_liquefier": [
         "FC461A_FB_Value",
         "FC461B_FB_Value"
     ],
+    "flow_controller_units": "SLPM",
     "liquefier_state": "Liquefier_DB_State",
     "liquefier_storage_level": "LIT525_Value",
-    "gas_bag_storage_level": "Level_Control_DB_GB_Level"
+    "gas_bag_storage_level": "Level_Control_DB_GB_Level",
+    "storage_level_units": "L"
 }
