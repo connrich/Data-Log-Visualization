@@ -15,7 +15,8 @@ def generate_plot(args):
     for i in table.index.unique(level='VarName'):
         dic[i] = table.loc[(i, )]
 
-    # Generate a figure object to store the plots
+    # Generate a figure object to store
+    # the plots
     fig = go.Figure()
     fig.update_layout(
         title='Datalog',
@@ -38,8 +39,8 @@ def generate_plot(args):
         )
 
     # Convert figure to interactive html to run in browser
-    system =file.name()
-    name = file.name().split('.')[0]
+    system =file.dispname()
+    name = file.dispname().split('.')[0]
     fig.write_html(f'{name}.html')
 
     # Automatically opens the graph once script has run
