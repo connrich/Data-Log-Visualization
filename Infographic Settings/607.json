@@ -1,0 +1,21 @@
+{
+    "project_number": 607,
+    "project_name": "Utrecht",
+    "medium_pressure_storage": "PT270_Value",
+    "medium_pressure_storage_units": "kPa",
+    "outlet_purity": "Purity Meter_DB_Purity Downstream",
+    "inlet_purity": "Purity Meter_DB_Purity Upstream",
+    "cold_head_temperatures": [
+        "TE510A_Value",
+        "TE510B_Value",
+        "TE511A_Value",
+        "TE511B_Value"
+    ],
+    "flow_controllers_to_liquefier": [
+        "FC461A_FB_Value",
+        "FC461B_FB_Value"
+    ],
+    "liquefier_state": "Liquefier_DB_State",
+    "liquefier_storage_level": "LIT525_Value",
+    "gas_bag_storage_level": "Level_Control_DB_GB_Level"
+}

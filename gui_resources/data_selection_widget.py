@@ -86,7 +86,7 @@ class DataSet(QHBoxLayout):
         self.color = QPushButton()
         self.color.setStyleSheet("QPushButton:hover{border: 1px solid rgb(0, 0, 0);}")
         self.color.setFixedSize(20, 20)
-        if type(color) == tuple:
+        if isinstance(color, tuple):
             self.setColor(color)
         else:
             self.setColor((random.randint(0, 255), 

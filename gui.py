@@ -141,7 +141,7 @@ class MainWindow(QMainWindow):
         self.addToolBar(self.ToolBar)
 
         # Clear all shown data 
-        self.ClearGraph = QPushButton('Clear')
+        self.ClearGraph = QPushButton('Clear Graph')
         self.ClearGraph.clicked.connect(self.DataSelectionWidget.clearGraph)
         self.ToolBar.addWidget(self.ClearGraph)
 

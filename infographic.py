@@ -11,6 +11,7 @@ from matplotlib.offsetbox import (TextArea, DrawingArea, OffsetImage,
 from datetime import datetime
 from matplotlib import cycler
 import calendar
+import json
 
 
 class Infographic():
@@ -160,10 +161,28 @@ def integrate(vec, dt):
     return value
 
 
+# Example for loading the json
+def load_project_json(proj_number: int) -> dict:
+    # Location of the project's json
+    path = f'Infographic Settings\{proj_number}.json'
+    
+    # Open json and load as a dictionary
+    with open(path, 'r') as json_file:
+        settings = json.load(json_file)
+    
+    # Return the json dictionary
+    return settings
+
+# Print out the dictionary to show the format 
+print(load_project_json(607))
+
+
 
 conv = 9.87
 info = Infographic(607,3,"PT270_Value")
 print(info.recovery_rate(36, conv))
+
+
 
 
 
