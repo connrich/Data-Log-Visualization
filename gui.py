@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
                             QAction, QFileDialog, QScrollArea, QToolBar, \
                             QCheckBox, QPushButton, QDateTimeEdit, QLabel
 from PyQt5.QtCore import Qt, QPointF, QDateTime
+from PyQt5.QtGui import QIcon
 
 '''
 Data analysis packages
@@ -43,6 +44,7 @@ class MainWindow(QMainWindow):
 
         # Main window settings
         self.setWindowTitle('Trends')
+        self.setWindowIcon(QIcon('gui_resources\Quantum_icon.png'))
 
         # Add graphing widget
         self.GraphWidget = GraphWidget()
