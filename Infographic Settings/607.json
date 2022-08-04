@@ -1,24 +1,22 @@
 {
     "project_number": 607,
     "project_name": "Utrecht",
-    "medium_pressure_storage": "PT270_Value",
-    "medium_pressure_storage_units": "kPa",
-    "outlet_purity": "Purity Meter_DB_Purity Downstream",
-    "inlet_purity": "Purity Meter_DB_Purity Upstream",
-    "cold_head_temperatures": [
-        "TE510A_Value",
+    "Medium Pressure Storage": ["PT270_Value", "kPa"],
+    "Outlet Purity": ["Purity Meter_DB_Purity Downstream", ""],
+    "Inlet Purity": ["Purity Meter_DB_Purity Upstream",""],
+    "Cold Head Temperatures": [
+        ["TE510A_Value",
         "TE510B_Value",
         "TE511A_Value",
-        "TE511B_Value"
+        "TE511B_Value"],
+        "K"
     ],
-    "cold_head_temperature_units": "K",
-    "flow_controllers_to_liquefier": [
-        "FC461A_FB_Value",
-        "FC461B_FB_Value"
+    "Liquefier Inlet Flow": [
+        ["FC461A_FB_Value",
+        "FC461B_FB_Value"],
+        "SLPM"
     ],
-    "flow_controller_units": "SLPM",
-    "liquefier_state": "Liquefier_DB_State",
-    "liquefier_storage_level": "LIT525_Value",
-    "gas_bag_storage_level": "Level_Control_DB_GB_Level",
-    "storage_level_units": "L"
+    "liquefier_state": ["Liquefier_DB_State",""],
+    "Liquefier Storage Level": ["LIT525_Value",""],
+    "Gas Bag Storage Level": ["Level_Control_DB_GB_Level",""]
 }
