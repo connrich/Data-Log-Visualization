@@ -2,9 +2,9 @@
     "project_number": 607,
     "project_name": "Utrecht",
     "Medium Pressure Storage": ["PT270_Value", "kPa"],
-    "Outlet Purity": ["Purity Meter_DB_Purity Downstream", ""],
-    "Inlet Purity": ["Purity Meter_DB_Purity Upstream",""],
-    "Cold Head Temperatures": [
+    "Outlet Purity": ["Purity Meter_DB_Purity Downstream", "%"],
+    "Inlet Purity": ["Purity Meter_DB_Purity Upstream","%"],
+    "Cold Head Temperature": [
         ["TE510A_Value",
         "TE510B_Value",
         "TE511A_Value",
