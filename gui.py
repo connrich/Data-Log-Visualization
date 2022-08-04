@@ -5,6 +5,8 @@ import sys
 from datetime import datetime
 import os
 import json
+import ctypes
+from platform import system
 
 '''
 PyQt packages
@@ -13,6 +15,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
                             QAction, QFileDialog, QScrollArea, QToolBar, \
                             QCheckBox, QPushButton, QDateTimeEdit, QLabel
 from PyQt5.QtCore import Qt, QPointF, QDateTime
+from PyQt5.QtGui import QIcon
 
 '''
 Data analysis packages
@@ -43,6 +46,7 @@ class MainWindow(QMainWindow):
 
         # Main window settings
         self.setWindowTitle('Trends')
+        self.setWindowIcon(QIcon('gui_resources\Quantum_icon.png'))
 
         # Add graphing widget
         self.GraphWidget = GraphWidget()
@@ -312,12 +316,18 @@ class DateTimeInput(QDateTimeEdit):
 
 
 if __name__ == '__main__':
+    # Needed to set task bar icon on Windows
+    if system() == 'Windows':
+        myappid = 'Quantum_Data_logger'
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
     # Helps with scaling when using two screens with diffirent DPI
     QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     QApplication.setAttribute(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
 
     # Initialize application
     app = QApplication(sys.argv)
+
     # Create window
     MainWindow = MainWindow()
     MainWindow.show()
