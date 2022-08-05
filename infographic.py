@@ -251,7 +251,7 @@ class Infographic():
         run_hrs, hrs = self.liq_runtime()
         leak = leak_rate*hrs*60
         pressure_key = self.dic['Medium Pressure Storage'][0]
-        pressure = self.df.loc[self.df['VarName'] == "PT270_Value"].VarValue.reset_index(drop = True)
+        pressure = self.df.loc[self.df['VarName'] == pressure_key].VarValue.reset_index(drop = True)
         volume = (pressure[pressure.size - 1] - pressure[0]) * conversion
         recovered = volume - out_flow + leak
         liqeq = recovered/745
@@ -295,6 +295,12 @@ class Infographic():
             peak.append(pdata)
             vdata, _ = signal.find_peaks(off_pressure[i]*-1, height=0, distance=10*psa)
             valley.append(vdata)
+        for i in range(0, len(peak)):
+            pdata = peak[i]
+            vdata = valley[i]
+            if pdata[0]<vdata[0]:
+                x=1
+
 
 
 
@@ -334,6 +340,11 @@ def integrate(vec, dt):
         value += dt * element
     return value
 
+def trendline(y):
+    x = np.arange(0, len(y))
+    A = np.vstack([x, np.ones(len(x))])
+    m, b = np.linalg.lstsq(A.T, y, rcond=None)[0]
+    return m, b
 
 # Example for loading the json
 def load_project_json(proj_number: int) -> dict:
