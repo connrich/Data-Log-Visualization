@@ -1,19 +1,15 @@
+import sys
+import os
+import json
+
 from PyQt5.QtWidgets import (QWidget, QLabel, QGridLayout, QPushButton,  
                             QRadioButton, QHBoxLayout, QCheckBox, QButtonGroup, 
                             QLineEdit, QApplication)
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5 import QtCore
-import sys
-import os
-import json
 
-# Workaround for testing
-try:
-    from style import StyleSheet as SS
-    from style import Font
-except:
-    from gui_resources.style import StyleSheet as SS
-    from gui_resources.style import Font
+from gui_resources.style import StyleSheet as SS
+from gui_resources.style import Font
 
 
 class SettingsWindow(QWidget):
@@ -33,7 +29,7 @@ class SettingsWindow(QWidget):
 
         # Window settings
         self.setWindowTitle('Settings')
-        # self.setWindowIcon(QIcon(os.path.join(os.path.dirname(__file__), 'Resources\\SettingsGear.png')))
+        self.setWindowIcon(QIcon("gui_resources/Quantum_icon.png"))
         self.setMinimumWidth(300)
 
         # Main layout for settings window

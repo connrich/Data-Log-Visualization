@@ -22,7 +22,7 @@ import json
 
 
 class Infographic():
-    def __init__(self, pnumber: int):
+    def __init__(self, pnumber: int, data: pd.DataFrame=None):
         col = cycler('color',
                         ['#fc280f', '#5fdcff', '#f4ba26', '#85c54c', '#c6d7e0'])
         plt.rc('figure', facecolor='#474747')
@@ -34,8 +34,13 @@ class Infographic():
         plt.rc('lines', linewidth=1.5)
         plt.rc('figure', facecolor='#474747')
 
+        # Allows already loaded data to be passed in as an argument 
+        if data is None:
+            self.df = Data(pnumber).display()
+        elif isinstance(data, pd.DataFrame):
+            self.df = data
+
         self.dic = load_project_json(pnumber)
-        self.df = Data(pnumber).display()
         self.name = self.dic['project_name']
         self.fig = plt.figure(figsize=(12, 15), dpi=50, constrained_layout=True)
         self.gs = self.fig.add_gridspec(nrows=9, ncols=3)

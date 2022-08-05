@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
                             QAction, QFileDialog, QScrollArea, QToolBar, \
                             QCheckBox, QPushButton, QDateTimeEdit, QLabel
 from PyQt5.QtCore import Qt, QPointF, QDateTime
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QCloseEvent
 
 '''
 Data analysis packages
@@ -31,6 +31,7 @@ from gui_resources.data_selection_widget import DataSelectionWidget
 from gui_resources.settings_window import SettingsWindow
 from gui_resources.style import StyleSheet as SS
 from gui_resources.error_message import ErrorMessage
+from gui_resources.infographic_options_page import InfographicOptions
 
 
 
@@ -64,7 +65,10 @@ class MainWindow(QMainWindow):
         self.constructToolBar()
 
         # Initialize data structures
-        self.loadedData = {}
+        self.loadedData = None
+
+        # Initialize infographic generation window 
+        self.InfographicWindow = InfographicOptions(main_window=self)
     
     def loadSettings(self) -> None:
         '''
@@ -76,7 +80,6 @@ class MainWindow(QMainWindow):
 
         # Construct settings window
         self.SettingsWindow = SettingsWindow(settings=self.settings)
-        # self.SettingsWindow.setWindowIcon(QIcon(os.path.join(os.path.dirname(__file__), 'Resources\\SettingsGear.png')))
 
     def constructDataSelectionDock(self) -> None:
         '''
@@ -209,7 +212,6 @@ class MainWindow(QMainWindow):
         Loads new CSV data into the application
         Clears the previously loaded data
         '''
-
         # Get the type of file
         filetype = path.split('/')[-1].split('.')[-1]
 
@@ -244,15 +246,17 @@ class MainWindow(QMainWindow):
         self.clearLoadedDatasets()
         self.GraphWidget.clear()
 
+        # Save new data
+        self.loadedData = df
+
         # Pivot the dataframe so it is easier to select data by tag name
-        table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
+        pivot_table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
 
         # Find all unique device tags and store the data in a dictionary
         # Dictionary key = tag string
         # Dictionary value = dataframe with time and device value
-        for name in table.index.unique(level='VarName'):
-            self.loadedData[name] = table.loc[(name, )]
-            self.DataSelectionWidget.addDataSet(name, self.loadedData[name], self.GraphWidget)
+        for name in pivot_table.index.unique(level='VarName'):
+            self.DataSelectionWidget.addDataSet(name, pivot_table.loc[(name, )], self.GraphWidget)
 
     def clearLoadedDatasets(self) -> None:
         '''
@@ -283,8 +287,19 @@ class MainWindow(QMainWindow):
         '''
         Generates an infographic and displays the output
         '''
-        # Add infographic functionality here
-        return 
+        if not self.loadedData.empty:
+            self.InfographicWindow.showWindow()
+        else:
+            ErrorMessage('No data is currently loaded. Please load data and try again.')
+        return
+    
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        '''
+        Overwrite of close event to close the other windows
+        '''
+        self.InfographicWindow.close()
+        self.SettingsWindow.close()
+        return super().closeEvent(a0)
 
 
 
@@ -292,7 +307,7 @@ class DateTimeInput(QDateTimeEdit):
     ''''
     Custom subclass for inputting date/time
     '''
-    def __init__(self, format:str ="MM/dd/yyyy HH:mm") -> None:
+    def __init__(self, format:str="MM/dd/yyyy HH:mm") -> None:
         super().__init__()
 
         # Set minimum size so full date and time can be seen
@@ -331,6 +346,8 @@ if __name__ == '__main__':
     # Create window
     MainWindow = MainWindow()
     MainWindow.show()
+
+    MainWindow.loadData("Logs\\System_Sensor_log0.csv")
 
     # Terminated when the application is closed 
     sys.exit(app.exec())
