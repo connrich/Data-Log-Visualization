@@ -13,7 +13,10 @@ from gui_resources.style import StyleSheet as SS
 
 
 class InfographicOptions(QWidget):
-    def __init__(self, main_window: QMainWindow):
+    ''''
+    Window for setting infographic settings
+    '''
+    def __init__(self, main_window: QMainWindow) -> None:
         super().__init__()
 
         # Save pointer to parent window 
@@ -35,7 +38,9 @@ class InfographicOptions(QWidget):
         # Add dropdown for selecting project number
         self.ProjectNumberCombo = QComboBox()
         self.populateProjectNumbers()
-        self.ProjectNumberCombo.currentTextChanged.connect(lambda text: self.populatePlotList(text))
+        self.ProjectNumberCombo.currentTextChanged.connect(
+            lambda text: self.populatePlotList(text)
+            )
         self.layout.addWidget(self.ProjectNumberCombo)
 
         # Create title for tag list 
@@ -76,12 +81,13 @@ class InfographicOptions(QWidget):
         '''
         for file_name in os.listdir('Infographic Settings'):
             file_name = file_name.split('.')[0]
+            # Check if name is a number
             if file_name.isnumeric():
                 self.ProjectNumberCombo.addItem(file_name)
 
     def populatePlotList(self, project_number: str) -> None:
         '''
-        Populates a list of plot types based on the Inforgrpahic Settings json file
+        Populates a list of plot types based on the Infographic Settings json file
         '''
         # Load list of plot types
         with open(f'Infographic Settings\\{project_number}.json', 'r') as json_file:
@@ -98,21 +104,25 @@ class InfographicOptions(QWidget):
             # Add the item to the list 
             self.PlotList.addItem(QListWidgetItem(plot))
     
-    def generateInfographic(self):
+    def generateInfographic(self) -> None:
         '''
         Calls the Infographic script with the chosen settings
         '''
+        # Create infographic object
         infographic = Infographic(
             int(self.ProjectNumberCombo.currentText()),
             data=self.MainWindow.loadedData
         )
 
+        # Add all selected plots to infographic
         for plot in self.PlotList.selectedItems():
             infographic.add_plot(plot.text())
         
+        # Add all selected bubbles to infographic 
         for bubble in self.BubbleList.selectedItems():
             infographic.add_bubble(bubble.text())
         
+        # Display the infographic 
         infographic.show()
 
     def showWindow(self) -> None:
