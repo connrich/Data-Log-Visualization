@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib.dates as dates
+from datetime import timedelta
 from matplotlib import colors
 from matplotlib import cm
 import matplotlib as mpl
@@ -14,6 +15,7 @@ from matplotlib.offsetbox import (TextArea, DrawingArea, OffsetImage,
 import os
 import json
 from datetime import datetime
+from scipy import signal
 from matplotlib import cycler
 import calendar
 import json
@@ -218,7 +220,7 @@ class Infographic():
         key = self.dic['liquefier_state']
         states = self.df.loc[self.df['VarName'] == key[0]].VarValue.reset_index(drop = True)
         times = self.df.loc[self.df['VarName'] == key[0]].TimeString.reset_index(drop = True)
-        dt = (times[1]-times[0]).total_seconds()/3600
+        dt = self.dt('Medium Pressure Storage')
         run_hrs = 0
         for state in states:
             if state == 4:
@@ -262,14 +264,66 @@ class Infographic():
         storage_key = "Medium Pressure Storage"
         tag2 = self.dic[storage_key][0]
         raw_states = (self.df.loc[self.df['VarName'] == tag1].VarValue).reset_index(drop = True)
-        pressure = (self.df.loc[self.df['VarName'] == tag2].VarValue).reset_index(drop = True)
+        raw_pressure = (self.df.loc[self.df['VarName'] == tag2].VarValue).reset_index(drop = True)
         pres_dates = (self.df.loc[self.df['VarName'] == tag2].TimeString).reset_index(drop = True)
-        bools = liq_dates.isin(pres_dates)
-        states=np.zeros(pressure.size)
-        # for i,boo in enumerate(bools):
-        #     if boo:
-        #
-        #
+        bools1 = liq_dates.isin(pres_dates)
+        states=[]
+        for i, boo in enumerate(bools1):
+            if boo:
+                states.append(raw_states[i])
+        bools2 = pres_dates.isin(liq_dates)
+        pressures = []
+        for i, boo in enumerate(bools2):
+            if boo:
+                pressures.append(raw_pressure[i])
+        off_pressure = []
+        tmp = []
+        stor = 2
+        for i, state in enumerate(states):
+            if (state == 2 and stor != 2 and len(tmp) != 0):
+                off_pressure.append(tmp)
+                tmp = []
+                tmp.append(pressures[i])
+            if (state == 2):
+                tmp.append(pressures[i])
+            stor = state
+        psa = self.psa_swing()
+        peak = []
+        valley = []
+        for i,list in enumerate(peak):
+            pdata, _ = signal.find_peaks(off_pressure[i], height=0, distance=10*psa)
+            peak.append(pdata)
+            vdata, _ = signal.find_peaks(off_pressure[i]*-1, height=0, distance=10*psa)
+            valley.append(vdata)
+
+
+
+
+
+        return peak, valley
+    def dt(self, feature):
+        key = self.dic[feature]
+        times = (self.df.loc[self.df['VarName'] == key[0]].TimeString).reset_index(drop=True)
+        return (times[1]-times[0])/timedelta(minutes=1)
+    def psa_swing(self):
+        tag = self.dic['Medium Pressure Storage']
+        y = (self.df.loc[self.df['VarName'] == tag[0]].VarValue).reset_index(drop=True)
+        raw_peaks, _ = signal.find_peaks(y, height = 0, distance = 2)
+        stor = 0
+        dt = self.dt('Medium Pressure Storage')
+        peaks = []
+        for peak in raw_peaks:
+            if (peak-stor)*dt<=4:
+                peaks.append(peak)
+            stor = peak
+        delta = []
+        for i,peak in enumerate(peaks):
+            if i != 0:
+                delta.append(peak-peaks[i-1])
+        swing = np.mean(delta)
+        return int(round(swing))
+
+
 
 
 
@@ -295,16 +349,17 @@ def load_project_json(proj_number: int) -> dict:
 
 if __name__ == '__main__':
     info = Infographic(607)
-    info.add_plot('Medium Pressure Storage')
-    info.add_plot('Liquefier Storage Level')
-    info.add_plot('Liquefier Inlet Flow')
-    info.add_bubble('Inlet Purity')
-    info.add_bubble('Outlet Purity')
-    info.add_bubble('Cold Head Temperature')
-    info.add_bubble('Liquefaction Rate')
-    info.add_bubble('Gas Bag Cycles')
-    info.add_bubble('Liquefier Run Time')
-    info.show()
+    # info.add_plot('Medium Pressure Storage')
+    # info.add_plot('Liquefier Storage Level')
+    # info.add_plot('Liquefier Inlet Flow')
+    # info.add_bubble('Inlet Purity')
+    # info.add_bubble('Outlet Purity')
+    # info.add_bubble('Cold Head Temperature')
+    # info.add_bubble('Liquefaction Rate')
+    # info.add_bubble('Gas Bag Cycles')
+    # info.add_bubble('Liquefier Run Time')
+    # info.show()
+    # lists = info.leak_rate()
     print(info.leak_rate())
 
 

@@ -16,7 +16,7 @@
         "FC461B_FB_Value"],
         "SLPM"
     ],
-    "liquefier_state": ["Liquefier_DB_State",""],
+    "Liquefier State": ["Liquefier_DB_State",""],
     "Liquefier Storage Level": ["LIT525_Value",""],
     "Gas Bag Storage Level": ["Level_Control_DB_GB_Level",""]
 }

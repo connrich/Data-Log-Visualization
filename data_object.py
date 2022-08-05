@@ -80,6 +80,8 @@ class Data():
 
     #returns name of dataframe
     def search(self):
+        if len(self.index) == 0:
+            return None
         for r in self.index:
             if r[0] == self.number:
                 return r[1]
