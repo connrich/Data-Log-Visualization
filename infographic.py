@@ -38,6 +38,8 @@ class Infographic():
         if data is None:
             self.df = Data(pnumber).display()
         elif isinstance(data, pd.DataFrame):
+            if data['TimeString'].dtype == np.float64:
+                data['TimeString'] = pd.to_datetime(data['TimeString'], unit='s')
             self.df = data
 
         self.dic = load_project_json(pnumber)
@@ -53,7 +55,7 @@ class Infographic():
         self.index = (2,0)
     def header(self):
         ax = self.fig.add_subplot(self.gs[0,0:3],frameon = False)
-        logo = img.imread('logo.png')
+        logo = img.imread('Quantum Logo Blue.jpg')
         imagebox = OffsetImage(logo, zoom = 0.1,)
         ab = AnnotationBbox(imagebox, (0.5,0.5), pad = 0, frameon = False, annotation_clip = True)
         # (0.47,0.7)
@@ -222,7 +224,7 @@ class Infographic():
         dates = (self.df.loc[self.df['VarName'] == key].TimeString).reset_index(drop = True)
         end = dates.size - 1
         hrs = round((dates[end] - dates[0]).total_seconds()/3600)
-        key = self.dic['liquefier_state']
+        key = self.dic['Liquefier State']
         states = self.df.loc[self.df['VarName'] == key[0]].VarValue.reset_index(drop = True)
         times = self.df.loc[self.df['VarName'] == key[0]].TimeString.reset_index(drop = True)
         dt = self.dt('Medium Pressure Storage')

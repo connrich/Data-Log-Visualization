@@ -22,7 +22,7 @@ class InfographicOptions(QWidget):
         # Window settings
         self.setWindowTitle('Generate Infographic')
         self.setWindowIcon(QIcon('gui_resources\Quantum_icon.png'))
-        self.setMinimumWidth(250)
+        self.setMinimumWidth(300)
 
         # Create layout 
         self.layout = QGridLayout()
@@ -102,15 +102,18 @@ class InfographicOptions(QWidget):
         '''
         Calls the Infographic script with the chosen settings
         '''
-        t = []
-        t[:] = map(lambda x: x.text(), self.PlotList.selectedItems())
-
-        t[:] = map(lambda x: x.text(), self.BubbleList.selectedItems())
-
         infographic = Infographic(
             int(self.ProjectNumberCombo.currentText()),
             data=self.MainWindow.loadedData
         )
+
+        for plot in self.PlotList.selectedItems():
+            infographic.add_plot(plot.text())
+        
+        for bubble in self.BubbleList.selectedItems():
+            infographic.add_bubble(bubble.text())
+        
+        infographic.show()
 
     def showWindow(self) -> None:
         '''
