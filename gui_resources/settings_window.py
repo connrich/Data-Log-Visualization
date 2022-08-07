@@ -4,9 +4,9 @@ import json
 
 from PyQt5.QtWidgets import (QWidget, QLabel, QGridLayout, QPushButton,  
                             QRadioButton, QHBoxLayout, QCheckBox, QButtonGroup, 
-                            QLineEdit, QApplication)
+                            QLineEdit, QApplication, QComboBox)
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 
 from gui_resources.style import StyleSheet as SS
 from gui_resources.style import Font
@@ -30,19 +30,22 @@ class SettingsWindow(QWidget):
         # Window settings
         self.setWindowTitle('Settings')
         self.setWindowIcon(QIcon("gui_resources/Quantum_icon.png"))
-        self.setMinimumWidth(300)
+        self.setMinimumWidth(350)
 
         # Main layout for settings window
         self.MainLayout = QGridLayout()
-        self.MainLayout.setAlignment(QtCore.Qt.AlignTop)
+        self.MainLayout.setAlignment(Qt.AlignTop)
         self.setLayout(self.MainLayout)
 
         # Add options for CSV imports
         self.CSVimportLabel = QLabel('CSV Import Settings')
         self.CSVimportLabel.setFont(Font.settings_title)
-        self.CSVimportLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.CSVimportLabel.setAlignment(Qt.AlignCenter)
         self.MainLayout.addWidget(self.CSVimportLabel)
-        self.MainLayout.addLayout(self.constructCSVsettings(), 1, 0)
+
+        # Add csv import settings
+        csv_settings = self.constructCSVsettings()
+        self.MainLayout.addLayout(csv_settings, 1, 0)
 
         # Button to apply the settings 
         self.ApplyButton = QPushButton('Apply')
@@ -56,6 +59,7 @@ class SettingsWindow(QWidget):
         # Populate current settings to window
         self.DelimiterSelection.setText(self.settings['delimiter'])
         self.DecimalSelection.setText(self.settings['decimal'])
+        self.DateTimeFormatLineEdit.setText(self.settings['date_time_format'])
 
         # Show the settings window 
         self.show()
@@ -68,6 +72,12 @@ class SettingsWindow(QWidget):
         # Save csv import settings
         self.settings['delimiter'] = self.DelimiterSelection.text()
         self.settings['decimal'] = self.DecimalSelection.text()
+        self.settings['date_time_format'] = self.DateTimeFormatLineEdit.text()
+        
+        # Update recent date/time formats
+        '''
+        Need to add 
+        '''
 
         # Write settings to the settings file
         with open(os.path.join(os.path.dirname(__file__), 'settings.json'), 'w+') as json_file:
@@ -77,19 +87,29 @@ class SettingsWindow(QWidget):
         '''
         Convenience function for constructing widgets pertaining to csv import settings
         '''
+        # Create layout of csv settings
         self.CSVLayout = QGridLayout()
 
         # Input for setting the CSV delimiter
         self.DelimiterSelectionLabel = QLabel('Delimiter')
+        self.DelimiterSelectionLabel.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.CSVLayout.addWidget(self.DelimiterSelectionLabel, 0, 0)
         self.DelimiterSelection = QLineEdit()
         self.CSVLayout.addWidget(self.DelimiterSelection, 0, 1)
 
         # Input for setting the CSV comma character
         self.DecimalSelectionLabel = QLabel('Decimal')
-        self.CSVLayout.addWidget(self.DecimalSelectionLabel, 1, 0)
+        self.CSVLayout.addWidget(self.DecimalSelectionLabel, 0, 2)
         self.DecimalSelection = QLineEdit()
-        self.CSVLayout.addWidget(self.DecimalSelection, 1, 1)
+        self.CSVLayout.addWidget(self.DecimalSelection, 0, 3)
+
+        # Input for date/time format of the data
+        self.DateTimeFormatLabel = QLabel('Date/Time Format')
+        self.CSVLayout.addWidget(self.DateTimeFormatLabel, 2, 0)
+        self.DateTimeFormatComboBox = QComboBox()
+        self.DateTimeFormatLineEdit = QLineEdit()
+        self.DateTimeFormatComboBox.setLineEdit(self.DateTimeFormatLineEdit)
+        self.CSVLayout.addWidget(self.DateTimeFormatComboBox, 2, 1, 1, 3)
 
         return self.CSVLayout
 
@@ -97,8 +117,8 @@ class SettingsWindow(QWidget):
 
 if __name__ == '__main__':
     # Helps with scaling when using two screens with diffirent DPI
-    QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(QtCore.Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
 
     # Initialize application
     app = QApplication(sys.argv)

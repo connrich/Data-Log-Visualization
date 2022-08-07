@@ -3,12 +3,12 @@ import os
 
 from PyQt5.QtWidgets import QWidget, QGridLayout, QCheckBox, QScrollArea, \
                             QVBoxLayout, QLabel, QPushButton, QListWidget, \
-                            QListWidgetItem, QMainWindow, QComboBox
+                            QListWidgetItem, QMainWindow, QComboBox, QDateTimeEdit
 from PyQt5.QtGui import QIcon
-from matplotlib.pyplot import plot_date
 
 from infographic import Infographic
 from gui_resources.style import StyleSheet as SS
+from gui_resources.date_time_input_widget import DateTimeInput
 
 
 
@@ -42,6 +42,14 @@ class InfographicOptions(QWidget):
             lambda text: self.populatePlotList(text)
             )
         self.layout.addWidget(self.ProjectNumberCombo)
+
+        # Add start date selection
+        self.StartDateTime = DateTimeInput()
+        self.layout.addWidget(self.StartDateTime)
+
+        # Add end date selection
+        self.EndDateTime = DateTimeInput()
+        self.layout.addWidget(self.EndDateTime)
 
         # Create title for tag list 
         self.PlotTitle = QLabel('Select plots to add:')

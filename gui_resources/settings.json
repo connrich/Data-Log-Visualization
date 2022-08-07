@@ -1,1 +1,1 @@
-{"delimiter": ";", "decimal": ","}
+{"delimiter": ",", "decimal": ".", "date_time_format": "%d.%m.%Y %H:%M:%S"}

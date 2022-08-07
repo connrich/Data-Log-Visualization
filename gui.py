@@ -32,6 +32,7 @@ from gui_resources.settings_window import SettingsWindow
 from gui_resources.style import StyleSheet as SS
 from gui_resources.error_message import ErrorMessage
 from gui_resources.infographic_options_page import InfographicOptions
+from gui_resources.date_time_input_widget import DateTimeInput
 
 
 
@@ -228,15 +229,22 @@ class MainWindow(QMainWindow):
                 df = pd.read_csv(path, 
                     delimiter=self.settings['delimiter'],
                     decimal=self.settings['decimal'], 
-                    low_memory=False)
+                    low_memory=False,
+                    on_bad_lines='skip')
+                if df.empty:
+                    raise Exception('Loaded csv file is empty')
                 # Convert times to Pandas TimeStamp
-                df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
+                date_time_format = self.settings['date_time_format']
+                df['TimeString'] = pd.to_datetime(df['TimeString'], format=date_time_format, errors='coerce')
+                df = df.dropna(subset=['TimeString'])
+                if df.empty:
+                    raise Exception('Error with date/time formatting')
                 # Convert times to UNIX integer format 
                 df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
             except Exception as ex:
-                ErrorMessage(f"Failed to load csv file. Check the correct delimiter and decimal character have been selected in settings. \n \
+                ErrorMessage(f"Failed to load csv file. \nException:  {ex} \n\n Also check if the correct delimiter and decimal character have been selected in settings. \n \
                             Current delimiter:   {self.settings['delimiter']} \n \
-                            Current decimal:   {self.settings['decimal']}")
+                            Current decimal:   {self.settings['decimal']} ")
                 return
         else:
             ErrorMessage(f'Invalid file type: {filetype} \n Only accepts csv or pickle data frames')
@@ -287,10 +295,10 @@ class MainWindow(QMainWindow):
         '''
         Generates an infographic and displays the output
         '''
-        if not self.loadedData.empty:
-            self.InfographicWindow.showWindow()
+        if self.loadedData is None or self.loadedData.empty:
+             ErrorMessage('No data is currently loaded. Please load data and try again.')
         else:
-            ErrorMessage('No data is currently loaded. Please load data and try again.')
+            self.InfographicWindow.showWindow()
         return
     
     def closeEvent(self, a0: QCloseEvent) -> None:
@@ -301,33 +309,6 @@ class MainWindow(QMainWindow):
         self.SettingsWindow.close()
         return super().closeEvent(a0)
 
-
-
-class DateTimeInput(QDateTimeEdit):
-    ''''
-    Custom subclass for inputting date/time
-    '''
-    def __init__(self, format:str="MM/dd/yyyy HH:mm") -> None:
-        super().__init__()
-
-        # Set minimum size so full date and time can be seen
-        self.setMinimumWidth(100)
-
-        # Set how the date/time is displayed 
-        if format is not None: 
-            self.setDisplayFormat(format)
-        
-        # Show a calendar when clicked 
-        self.setCalendarPopup(True)
-        
-        # Default to the current date and time 
-        self.setDateTime(QDateTime.currentDateTime())
-
-    def getUNIX(self) -> int:
-        """
-        Returns the current date/time in UNIX integer format
-        """
-        return self.dateTime().toTime_t()
 
 
 if __name__ == '__main__':
@@ -347,7 +328,7 @@ if __name__ == '__main__':
     MainWindow = MainWindow()
     MainWindow.show()
 
-    MainWindow.loadData("Logs\\System_Sensor_log0.csv")
+    MainWindow.loadData("P619_2022_05_020.csv")
 
     # Terminated when the application is closed 
     sys.exit(app.exec())
