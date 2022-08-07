@@ -233,16 +233,19 @@ class MainWindow(QMainWindow):
                     on_bad_lines='skip')
                 if df.empty:
                     raise Exception('Loaded csv file is empty')
-                # Convert times to Pandas TimeStamp
+                # Convert times to Pandas TimeStamp, removes failed conversions 
                 date_time_format = self.settings['date_time_format']
                 df['TimeString'] = pd.to_datetime(df['TimeString'], format=date_time_format, errors='coerce')
                 df = df.dropna(subset=['TimeString'])
                 if df.empty:
-                    raise Exception('Error with date/time formatting')
+                    raise Exception((
+                        f'Error with date/time formatting \n'
+                        f'Current format: {date_time_format}'
+                        ))
                 # Convert times to UNIX integer format 
                 df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
             except Exception as ex:
-                ErrorMessage(f"Failed to load csv file. \nException:  {ex} \n\n Also check if the correct delimiter and decimal character have been selected in settings. \n \
+                ErrorMessage(f"Failed to load csv file. \nException:  {ex} \n\nAlso check if the correct delimiter and decimal character have been selected in settings. \n \
                             Current delimiter:   {self.settings['delimiter']} \n \
                             Current decimal:   {self.settings['decimal']} ")
                 return
