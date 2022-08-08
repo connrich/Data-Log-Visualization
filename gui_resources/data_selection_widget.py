@@ -80,6 +80,7 @@ class DataSet(QHBoxLayout):
         self.PlotDataItem = pg.PlotDataItem(
             data.index,
             data['VarValue'].to_list(),
+            name=name
             )
 
         # Construct display color widget
