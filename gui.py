@@ -226,11 +226,22 @@ class MainWindow(QMainWindow):
         elif filetype == 'csv':
             try:
                 # Read the CSV file at the path
-                df = pd.read_csv(path, 
-                    delimiter=self.settings['delimiter'],
-                    decimal=self.settings['decimal'], 
-                    low_memory=False,
-                    on_bad_lines='skip')
+                # Also catches on_bad_lines/error_bad_lines deprecation error
+                # on_bad_lines is Pandas version 1.3.0+
+                try:
+                    df = pd.read_csv(path, 
+                        delimiter=self.settings['delimiter'],
+                        decimal=self.settings['decimal'], 
+                        low_memory=False,
+                        on_bad_lines='skip')
+                except Exception as ex:
+                    df = pd.read_csv(path, 
+                        delimiter=self.settings['delimiter'],
+                        decimal=self.settings['decimal'], 
+                        low_memory=False,
+                        error_bad_lines=False)
+
+                # Catch empty data frame
                 if df.empty:
                     raise Exception('Loaded csv file is empty')
                 # Convert times to Pandas TimeStamp, removes failed conversions 
@@ -331,7 +342,8 @@ if __name__ == '__main__':
     MainWindow = MainWindow()
     MainWindow.show()
 
-    MainWindow.loadData("P619_2022_05_020.csv")
+    # MainWindow.loadData("P619_2022_05_020.csv")
+    MainWindow.loadData("Logs/System_Sensor_log0.csv")
 
     # Terminated when the application is closed 
     sys.exit(app.exec())
