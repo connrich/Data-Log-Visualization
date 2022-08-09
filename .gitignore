@@ -2,3 +2,5 @@ __pycache__/
 .idea/
 Logs/
 gui_resources/__pycache__/
+Utrecht.pickle/
+

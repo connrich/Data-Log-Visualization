@@ -55,7 +55,7 @@ class Infographic():
         self.index = (2,0)
     def header(self):
         ax = self.fig.add_subplot(self.gs[0,0:3],frameon = False)
-        logo = img.imread('Quantum Logo Blue.jpg')
+        logo = img.imread('logo.png')
         imagebox = OffsetImage(logo, zoom = 0.1,)
         ab = AnnotationBbox(imagebox, (0.5,0.5), pad = 0, frameon = False, annotation_clip = True)
         # (0.47,0.7)
@@ -86,20 +86,7 @@ class Infographic():
         ax.bar(x,y,label='_1',width = 0.01, align = 'edge', zorder = 1)
         ax.tick_params(axis="x", direction="out", which='major', width=2, length=10)
         ax.xaxis.set_major_locator(dates.DayLocator(interval=1))  # Show major tick every day
-        ax.xaxis.set_major_formatter(dates.DateFormatter(""))  # Don't Show tick label
-        alldays = x.dt.day_name()
-        days = []
-        for i,day in enumerate(alldays):
-            if i == 0:
-                days.append(day)
-            elif days[-1] != day:
-                days.append(day)
-        days = days[0:len(days)-1]
-        for i,day in enumerate(days):
-            ax.text(0.17 * (i * 6.35/(len(days)+1) + 1), -0.05, day,
-                        verticalalignment='center', horizontalalignment='center',
-                        fontsize=8, fontweight='bold',
-                        transform=ax.transAxes, color='#e3e3e3')
+        ax.xaxis.set_major_formatter(dates.DateFormatter("%m/%d"))  # Don't Show tick label
 
     def add_plot(self, feature):
         ax = self.fig.add_subplot(self.gs[self.index[0],0:3],frameon= False)
@@ -183,10 +170,10 @@ class Infographic():
                     ha='center', fontsize='x-large', color='#e3e3e3')
         if feature == 'Liquefier Run Time':
             run_hrs,hrs = self.liq_runtime()
-            value = run_hrs/hrs*100
+            value = round(run_hrs/hrs*100,2)
             ax.text(0.5, 0.6, 'Liquefier Run Time', ha='center', fontsize='x-large',
                     fontweight='semibold', color='#e3e3e3')
-            ax.text(0.5, 0.4, str(round(value * 100) / 100) + "%",
+            ax.text(0.5, 0.4, str(value) + "%",
                     ha='center', fontsize='x-large', color='#e3e3e3')
 
         ax.get_xaxis().set_visible(False)
@@ -220,19 +207,17 @@ class Infographic():
         run_hrs, hrs = self.liq_runtime()
         return (liquid/run_hrs*24)
     def liq_runtime(self):
-        key = self.dic['Medium Pressure Storage'][0]
-        dates = (self.df.loc[self.df['VarName'] == key].TimeString).reset_index(drop = True)
-        end = dates.size - 1
-        hrs = round((dates[end] - dates[0]).total_seconds()/3600)
         key = self.dic['Liquefier State']
         states = self.df.loc[self.df['VarName'] == key[0]].VarValue.reset_index(drop = True)
-        times = self.df.loc[self.df['VarName'] == key[0]].TimeString.reset_index(drop = True)
-        dt = self.dt('Medium Pressure Storage')
+        dt = self.dt('Liquefier State')
+        hrs = 0
         run_hrs = 0
         for state in states:
+            hrs += dt
             if state == 4:
                 run_hrs += dt
-        run_hrs = round(run_hrs)
+        run_hrs = round(run_hrs/60)
+        hrs = round(hrs/60)
         return run_hrs, hrs
     def gb_cycles(self):
         key = self.dic['Gas Bag Storage Level']
@@ -265,7 +250,7 @@ class Infographic():
         rate = (liqeq/hrs)*24
         return rate
     def leak_rate(self):
-        liq_key = "liquefier_state"
+        liq_key = "Liquefier State"
         tag1 = self.dic[liq_key][0]
         liq_dates= (self.df.loc[self.df['VarName'] == tag1].TimeString).reset_index(drop = True)
         storage_key = "Medium Pressure Storage"
@@ -315,9 +300,14 @@ class Infographic():
 
         return peak, valley
     def dt(self, feature):
-        key = self.dic[feature]
-        times = (self.df.loc[self.df['VarName'] == key[0]].TimeString).reset_index(drop=True)
-        return (times[1]-times[0])/timedelta(minutes=1)
+        key = self.dic[feature][0]
+        if type(key) == list:
+            times = (self.df.loc[self.df['VarName'] == key[0]].TimeString).reset_index(drop=True)
+            return (times[1] - times[0]) / timedelta(minutes=1)
+        else:
+            times = (self.df.loc[self.df['VarName'] == key].TimeString).reset_index(drop=True)
+            return (times[1] - times[0]) / timedelta(minutes=1)
+
     def psa_swing(self):
         tag = self.dic['Medium Pressure Storage']
         y = (self.df.loc[self.df['VarName'] == tag[0]].VarValue).reset_index(drop=True)
@@ -367,19 +357,16 @@ def load_project_json(proj_number: int) -> dict:
 
 if __name__ == '__main__':
     info = Infographic(607)
-    # info.add_plot('Medium Pressure Storage')
-    # info.add_plot('Liquefier Storage Level')
-    # info.add_plot('Liquefier Inlet Flow')
-    # info.add_bubble('Inlet Purity')
-    # info.add_bubble('Outlet Purity')
-    # info.add_bubble('Cold Head Temperature')
-    # info.add_bubble('Liquefaction Rate')
-    # info.add_bubble('Gas Bag Cycles')
-    # info.add_bubble('Liquefier Run Time')
-    # info.show()
-    # lists = info.leak_rate()
-    print(info.leak_rate())
-
+    info.add_plot('Medium Pressure Storage')
+    info.add_plot('Liquefier Storage Level')
+    info.add_plot('Liquefier Inlet Flow')
+    info.add_bubble('Inlet Purity')
+    info.add_bubble('Outlet Purity')
+    info.add_bubble('Cold Head Temperature')
+    info.add_bubble('Liquefaction Rate')
+    info.add_bubble('Gas Bag Cycles')
+    info.add_bubble('Liquefier Run Time')
+    info.show()
 
 
 
