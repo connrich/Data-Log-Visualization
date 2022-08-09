@@ -213,6 +213,10 @@ class MainWindow(QMainWindow):
         Loads new CSV data into the application
         Clears the previously loaded data
         '''
+        # Check if path is empty
+        if path == '':
+            return
+
         # Get the type of file
         filetype = path.split('/')[-1].split('.')[-1]
 
@@ -261,7 +265,7 @@ class MainWindow(QMainWindow):
                             Current decimal:   {self.settings['decimal']} ")
                 return
         else:
-            ErrorMessage(f'Invalid file type: {filetype} \n Only accepts csv or pickle data frames')
+            ErrorMessage(f'Invalid file type: {filetype} \nOnly accepts csv or pickle data frames')
             return
 
         # If load was succesful we can clear old data and the graph
