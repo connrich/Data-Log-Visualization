@@ -97,6 +97,7 @@ class InfographicOptions(QWidget):
         '''
         Populates a list of plot types based on the Infographic Settings json file
         '''
+        print('loading')        
         # Load list of plot types
         with open(f'Infographic Settings\\{project_number}.json', 'r') as json_file:
             plot_types = json.load(json_file)
@@ -133,7 +134,7 @@ class InfographicOptions(QWidget):
         # Display the infographic 
         infographic.show()
 
-    def showWindow(self) -> None:
+    def show(self) -> None:
         '''
         Shows the infographic options window and loads the current tags
         '''
@@ -144,4 +145,4 @@ class InfographicOptions(QWidget):
         self.populatePlotList(self.ProjectNumberCombo.currentText())
 
         # Show the window 
-        self.show()
+        super().show()
