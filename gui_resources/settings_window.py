@@ -12,6 +12,11 @@ from gui_resources.style import StyleSheet as SS
 from gui_resources.style import Font
 
 
+#TODO
+# Combobox selection for delimiter character and decimal character
+# Default import configuration options 
+
+
 class SettingsWindow(QWidget):
     '''
     Custom window for application settings
@@ -52,18 +57,20 @@ class SettingsWindow(QWidget):
         self.ApplyButton.clicked.connect(self.settingsApply)
         self.MainLayout.addWidget(self.ApplyButton)
 
-    def showWindow(self) -> None:
+    def show(self) -> None:
         '''
         Opens the settings window and populates it with the current settings
         '''
         # Populate current settings to window
         self.DelimiterSelection.setText(self.settings['delimiter'])
         self.DecimalSelection.setText(self.settings['decimal'])
+        self.DateTimeFormatComboBox.clear()
+        self.DateTimeFormatComboBox.addItems(self.settings['recent_date_time_format'])
         self.DateTimeFormatLineEdit.setText(self.settings['date_time_format'])
 
         # Show the settings window 
-        self.show()
-        self.activateWindow()
+        super().show()
+        super().activateWindow()
     
     def settingsApply(self) -> None:
         '''
@@ -73,11 +80,14 @@ class SettingsWindow(QWidget):
         self.settings['delimiter'] = self.DelimiterSelection.text()
         self.settings['decimal'] = self.DecimalSelection.text()
         self.settings['date_time_format'] = self.DateTimeFormatLineEdit.text()
-        
-        # Update recent date/time formats
-        '''
-        Need to add 
-        '''
+
+        date_time_formats = [
+            self.DateTimeFormatComboBox.itemText(i) for i in range(self.DateTimeFormatComboBox.count())
+            ][:6]
+        if self.settings['date_time_format'] not in date_time_formats:
+            date_time_formats.insert(0, self.settings['date_time_format'])
+            self.DateTimeFormatComboBox.addItem(self.DateTimeFormatLineEdit.text())
+        self.settings['recent_date_time_format'] = date_time_formats
 
         # Write settings to the settings file
         with open(os.path.join(os.path.dirname(__file__), 'settings.json'), 'w+') as json_file:

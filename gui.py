@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
 
         # Add action for opening settings window
         self.SettingsAction = QAction('Settings')
-        self.SettingsAction.triggered.connect(self.SettingsWindow.showWindow)
+        self.SettingsAction.triggered.connect(self.SettingsWindow.show)
         self.MenuBar.addAction(self.SettingsAction)
 
         # Add action for loading a dataset
@@ -316,7 +316,7 @@ class MainWindow(QMainWindow):
         if self.loadedData is None or self.loadedData.empty:
              ErrorMessage('No data is currently loaded. Please load data and try again.')
         else:
-            self.InfographicWindow.showWindow()
+            self.InfographicWindow.show()
         return
     
     def closeEvent(self, a0: QCloseEvent) -> None:
@@ -347,7 +347,7 @@ if __name__ == '__main__':
     MainWindow.show()
 
     # MainWindow.loadData("P619_2022_05_020.csv")
-    MainWindow.loadData("Logs/System_Sensor_log0.csv")
+    # MainWindow.loadData("Logs/System_Sensor_log0.csv")
 
     # Terminated when the application is closed 
     sys.exit(app.exec())
