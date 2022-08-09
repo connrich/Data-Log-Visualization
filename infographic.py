@@ -4,20 +4,14 @@ import pandas as pd
 import numpy as np
 import matplotlib.dates as dates
 from datetime import timedelta
-from matplotlib import colors
 from matplotlib import cm
-import matplotlib as mpl
 from matplotlib import patches
 import matplotlib.image as img
-from matplotlib import cycler
-from matplotlib.offsetbox import (TextArea, DrawingArea, OffsetImage,
-                                  AnnotationBbox)
-import os
-import json
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from datetime import datetime
 from scipy import signal
 from matplotlib import cycler
-import calendar
+
 import json
 
 
@@ -87,6 +81,7 @@ class Infographic():
         ax.tick_params(axis="x", direction="out", which='major', width=2, length=10)
         ax.xaxis.set_major_locator(dates.DayLocator(interval=1))  # Show major tick every day
         ax.xaxis.set_major_formatter(dates.DateFormatter("%m/%d"))  # Don't Show tick label
+        ax.grid(False)
 
     def add_plot(self, feature):
         ax = self.fig.add_subplot(self.gs[self.index[0],0:3],frameon= False)
