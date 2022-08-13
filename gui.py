@@ -199,7 +199,7 @@ class MainWindow(QMainWindow):
 
         # Verfiy time range
         if lower_unix > upper_unix:
-            ErrorMessage('Invalid date/time range. Check you start and end date/time.')
+            ErrorMessage('Invalid date/time range. Check your start and end date/time.')
             return
 
         # Set the new x range on the graph
