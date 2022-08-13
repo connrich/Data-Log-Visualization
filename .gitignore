@@ -3,4 +3,4 @@ __pycache__/
 Logs/
 gui_resources/__pycache__/
 Utrecht.pickle/
-gui_resources/settings.json/
+gui_resources/settings.json
