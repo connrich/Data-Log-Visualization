@@ -331,7 +331,7 @@ class MainWindow(QMainWindow):
         '''
         Generates an infographic and displays the output
         '''
-        if self.loadedData is None or not self.loadedData or self.loadedData.empty:
+        if self.loadedData is None or self.loadedData.empty:
              ErrorMessage('No data is currently loaded. Please load data and try again.')
         else:
             self.InfographicWindow.show()
