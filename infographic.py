@@ -327,7 +327,8 @@ class Infographic():
         storage = self.dic[storage_key][2]
         slope = sum(slopes)*storage/(len(slopes)*xunit)
         if self.dic[storage_key][1] == 'kPa':
-            return round((slope/101.325),2)
+            final = round((slope/101.325),2)
+            return abs(final)
 
 
 
