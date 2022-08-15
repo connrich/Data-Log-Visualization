@@ -170,6 +170,22 @@ class Infographic():
                     fontweight='semibold', color='#e3e3e3')
             ax.text(0.5, 0.4, str(value) + "%",
                     ha='center', fontsize='x-large', color='#e3e3e3')
+        if feature == 'Recovery Rate':
+            value = self.recovery_rate()
+            ax.text(0.5, 0.7, 'Average', ha='center', fontsize='x-large',
+                        fontweight='semibold', color='#e3e3e3')
+            ax.text(0.5, 0.6, 'Liquefaction Rate', ha='center', fontsize='x-large',
+                        fontweight='semibold', color='#e3e3e3')
+            ax.text(0.5, 0.25, str(value) + '\n' + "Liters of Liquid" + "\n" + "Helium per Day",
+                        ha='center', fontsize='x-large', color='#e3e3e3')
+        if feature == 'Leak Rate':
+            value = self.leak_rate()
+            ax.text(0.5, 0.7, 'Average', ha='center', fontsize='x-large',
+                        fontweight='semibold', color='#e3e3e3')
+            ax.text(0.5, 0.6, 'Leak Rate', ha='center', fontsize='x-large',
+                        fontweight='semibold', color='#e3e3e3')
+            ax.text(0.5, 0.25, str(value)+" SLM",
+                        ha='center', fontsize='x-large', color='#e3e3e3')
 
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
@@ -228,22 +244,24 @@ class Infographic():
                 value += 1
         run_hrs, hrs = self.liq_runtime()
         return int(round(value/hrs)*24)
-    def recovery_rate(self,leak_rate,conversion):
+    def recovery_rate(self):
         key = self.dic['Liquefier Inlet Flow']
-        tag3 = 'PT270_Value'
         tags = key[0]
         out_flow = 0
+        storage_key = "Medium Pressure Storage"
         for tag in tags:
-            out_flow += integrate(self.df.loc[self.df['VarName'] == tag].VarValue, 1/2)
+            out_flow += integrate(self.df.loc[self.df['VarName'] == tag].VarValue, self.dt("Liquefier Inlet Flow"))
         run_hrs, hrs = self.liq_runtime()
-        leak = leak_rate*hrs*60
-        pressure_key = self.dic['Medium Pressure Storage'][0]
+        leak = self.leak_rate()*hrs*60
+        pressure_key = self.dic[storage_key][0]
         pressure = self.df.loc[self.df['VarName'] == pressure_key].VarValue.reset_index(drop = True)
-        volume = (pressure[pressure.size - 1] - pressure[0]) * conversion
-        recovered = volume - out_flow + leak
+        volume = (pressure[pressure.size - 1] - pressure[0])*self.dic[storage_key][2]
+        if self.dic[storage_key][1] == 'kPa':
+            volume = volume / 101.325
+        recovered = volume + out_flow + leak
         liqeq = recovered/745
         rate = (liqeq/hrs)*24
-        return rate
+        return round(rate,1)
     def leak_rate(self):
         liq_key = "Liquefier State"
         tag1 = self.dic[liq_key][0]
@@ -277,23 +295,48 @@ class Infographic():
         psa = self.psa_swing()
         peak = []
         valley = []
-        for i,list in enumerate(peak):
-            pdata, _ = signal.find_peaks(off_pressure[i], height=0, distance=10*psa)
+        for i,list in enumerate(off_pressure):
+            pdata, _ = signal.find_peaks(list, height=0, distance=15*psa)
             peak.append(pdata)
-            vdata, _ = signal.find_peaks(off_pressure[i]*-1, height=0, distance=10*psa)
+            flip = [num * -1 for num in list]
+            pos = [num + max(list) for num in flip]
+            vdata, _ = signal.find_peaks(pos, height=0, distance=15*psa)
             valley.append(vdata)
+        slopes = []
         for i in range(0, len(peak)):
-            pdata = peak[i]
-            vdata = valley[i]
-            if pdata[0]<vdata[0]:
-                x=1
+            if len(valley[i])<2:
+                pass
+            elif (valley[i])[0]<(peak[i])[0]:
+                rg = int((valley[i][1]-peak[i][0])/2)
+                for index, j in enumerate(valley[i]):
+                    if j!= 0:
+                        stop = index
+                        start = index-rg
+                        y = off_pressure[i][start:stop]
+                        m, b = trendline(y)
+                        slopes.append(m)
+            elif (valley[i])[0]>(peak[i])[0]:
+                rg = int((valley[i][0]-peak[i][0])/2)
+                for index, j in enumerate(valley[i]):
+                    stop = index
+                    start = index-rg
+                    y = off_pressure[i][start:stop]
+                    m, b = trendline(y)
+                    slopes.append(m)
+        xunit = self.dt(storage_key)
+        storage = self.dic[storage_key][2]
+        slope = sum(slopes)*storage/(len(slopes)*xunit)
+        if self.dic[storage_key][1] == 'kPa':
+            return round((slope/101.325),2)
 
 
 
 
 
 
-        return peak, valley
+
+
+
     def dt(self, feature):
         key = self.dic[feature][0]
         if type(key) == list:
@@ -352,16 +395,7 @@ def load_project_json(proj_number: int) -> dict:
 
 if __name__ == '__main__':
     info = Infographic(607)
-    info.add_plot('Medium Pressure Storage')
-    info.add_plot('Liquefier Storage Level')
-    info.add_plot('Liquefier Inlet Flow')
-    info.add_bubble('Inlet Purity')
-    info.add_bubble('Outlet Purity')
-    info.add_bubble('Cold Head Temperature')
-    info.add_bubble('Liquefaction Rate')
-    info.add_bubble('Gas Bag Cycles')
-    info.add_bubble('Liquefier Run Time')
-    info.show()
+    print(info.recovery_rate())
 
 
 
