@@ -6,9 +6,12 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QCheckBox, QScrollArea, \
                             QListWidgetItem, QMainWindow, QComboBox, QDateTimeEdit
 from PyQt5.QtGui import QIcon
 
+import pandas as pd
+
 from infographic import Infographic
 from gui_resources.style import StyleSheet as SS
 from gui_resources.date_time_input_widget import DateTimeInput
+from gui_resources.error_message import ErrorMessage
 
 
 
@@ -112,14 +115,39 @@ class InfographicOptions(QWidget):
             # Add the item to the list 
             self.PlotList.addItem(QListWidgetItem(plot))
     
+    def getTimeFilteredData(self, start: float, end: float) -> pd.DataFrame:
+        '''
+        Returns a segment of the currently loaded data between start to end
+        start and end should be UNIX time stamps
+        '''
+        # Verfiy time range
+        if start > end:
+            ErrorMessage('Invalid date/time range. Check your start and end date/time.')
+            return None
+        
+        data = self.MainWindow.loadedData.copy()
+
+        data = data[data.TimeString > start]
+        data = data[data.TimeString < end]
+
+        return data
+    
     def generateInfographic(self) -> None:
         '''
         Calls the Infographic script with the chosen settings
         '''
+        # Trim data to selected start time 
+        data = self.getTimeFilteredData(
+            start=self.StartDateTime.getUNIX(),
+            end=self.EndDateTime.getUNIX()
+            )
+        if data is None:
+            return
+
         # Create infographic object
         infographic = Infographic(
             int(self.ProjectNumberCombo.currentText()),
-            data=self.MainWindow.loadedData
+            data=data
         )
 
         # Add all selected plots to infographic

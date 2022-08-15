@@ -13,7 +13,7 @@ PyQt packages
 '''
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
                             QAction, QFileDialog, QScrollArea, QToolBar, \
-                            QCheckBox, QPushButton, QDateTimeEdit, QLabel
+                            QCheckBox, QPushButton, QDateTimeEdit, QLabel, QMenu
 from PyQt5.QtCore import Qt, QPointF, QDateTime
 from PyQt5.QtGui import QIcon, QCloseEvent
 
@@ -118,27 +118,44 @@ class MainWindow(QMainWindow):
         self.MenuBar = QMenuBar()
         self.setMenuBar(self.MenuBar)
 
+        # Add 'File' meu option
+        self.FileMenu = QMenu('File')
+        self.MenuBar.addMenu(self.FileMenu)
+
+        # Add 'Edit' menu option
+        self.EditMenu = QMenu('Edit')
+        self.MenuBar.addMenu(self.EditMenu)
+
+        # Add 'View' menu option
+        self.ViewMenu = QMenu('View')
+        self.MenuBar.addMenu(self.ViewMenu)
+
         # Add action for opening settings window
         self.SettingsAction = QAction('Settings')
         self.SettingsAction.triggered.connect(self.SettingsWindow.show)
-        self.MenuBar.addAction(self.SettingsAction)
+        self.FileMenu.addAction(self.SettingsAction)
 
         # Add action for loading a dataset
         self.loadDataAction = QAction('Load Dataset')
         self.loadDataAction.triggered.connect(
             lambda: self.loadData(QFileDialog.getOpenFileName()[0])
             )
-        self.MenuBar.addAction(self.loadDataAction)
+        self.EditMenu.addAction(self.loadDataAction)
+
+        # Add action for clearing loaded dataset
+        self.clearDatasetAction = QAction('Clear Dataset')
+        self.clearDatasetAction.triggered.connect(self.clearLoadedDatasets)
+        self.EditMenu.addAction(self.clearDatasetAction)
 
         # Add action for showing data selection widget
-        self.dataSelectionShow = QAction('Open Data Selection')
+        self.dataSelectionShow = QAction('Show Data Selection Menu')
         self.dataSelectionShow.triggered.connect(self.DataSelectionDock.show)
-        self.MenuBar.addAction(self.dataSelectionShow)
+        self.ViewMenu.addAction(self.dataSelectionShow)
 
         # Add action for generating an infographic
         self.generateInfographicAction = QAction('Generate Infographic')
         self.generateInfographicAction.triggered.connect(self.generateInfographic)
-        self.MenuBar.addAction(self.generateInfographicAction)
+        self.FileMenu.addAction(self.generateInfographicAction)
     
     def constructToolBar(self) -> None:
         '''
@@ -199,7 +216,7 @@ class MainWindow(QMainWindow):
 
         # Verfiy time range
         if lower_unix > upper_unix:
-            ErrorMessage('Invalid date/time range. Check you start and end date/time.')
+            ErrorMessage('Invalid date/time range. Check your start and end date/time.')
             return
 
         # Set the new x range on the graph
@@ -290,6 +307,7 @@ class MainWindow(QMainWindow):
         '''
         self.loadedData = {}
         self.DataSelectionWidget.clearDatasets()
+        self.GraphWidget.clear()
 
     def onMouseMoved(self, point: QPointF) -> None:
         '''
@@ -313,7 +331,7 @@ class MainWindow(QMainWindow):
         '''
         Generates an infographic and displays the output
         '''
-        if self.loadedData is None or self.loadedData.empty:
+        if self.loadedData is None or not self.loadedData or self.loadedData.empty:
              ErrorMessage('No data is currently loaded. Please load data and try again.')
         else:
             self.InfographicWindow.show()
