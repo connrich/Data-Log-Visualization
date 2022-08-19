@@ -185,6 +185,11 @@ class MainWindow(QMainWindow):
         self.LockYAxis = QCheckBox('Freeze Y axis')
         self.LockYAxis.clicked.connect(lambda: self.GraphWidget.setMouseEnabled(y=(not self.LockYAxis.isChecked())))
         self.ToolBar.addWidget(self.LockYAxis)
+        
+        # Add option to show legend
+        self.ShowLegend = QCheckBox('Show legend')
+        self.ShowLegend.clicked.connect(lambda: self.GraphWidget.showLegend(self.ShowLegend.isChecked()))
+        self.ToolBar.addWidget(self.ShowLegend)
         self.ToolBar.addSeparator()
 
         # Start date/time to show on graph
