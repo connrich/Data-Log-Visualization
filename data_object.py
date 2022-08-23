@@ -2,9 +2,10 @@ import pandas as pd
 import pickle
 import os
 import json
-#Data object for saving pandas dataframes
+# Data object for saving pandas dataframes
 class Data():
-    #initialize by loading file
+
+    # initialize by loading file
     def __init__(self, number):
         self.number = number
         self.dic = load_project_json(number)
@@ -21,19 +22,28 @@ class Data():
         else:
             self.M = file
             self.save()
-    #blank function that returns dataframe
+    # blank function that returns dataframe
+
     def display(self):
+
         return self.M
+
+    # returns pivoted dataframe
     def pivot(self):
+
         return pd.pivot_table(data=self.M, index=['VarName', 'TimeString'])
+
+    # cleans data
     def clean(self):
         self.M = pd.DataFrame.dropna(self.M)
         self.M = self.M.drop_duplicates(subset = ['TimeString','VarName'])
         self.M.sort_values(by="TimeString", inplace=True)
         self.save()
         return self.M
-    #merges current data frame with new data, deletes repeats
+
+    # merges current data frame with new data, deletes repeats
     def merge(self,filename):
+
         df = pd.read_csv(filename, delimiter=';', low_memory=False, decimal=',')
         df['TimeString'] = pd.to_datetime(df['TimeString'], format='%d.%m.%Y %H:%M:%S')
         df = df.drop(columns=['Time_ms', 'Validity'])
@@ -42,15 +52,19 @@ class Data():
         os.remove(filename)
         self.save()
         return self.M
-    #saves dataframe
+
+    # saves dataframe
     def save(self):
+
         try:
             with open(self.name + ".pickle", "wb") as f:
                 pickle.dump(self.M, f, protocol=pickle.HIGHEST_PROTOCOL)
         except Exception as ex:
             print("Error during pickling object (Possibly unsupported): ", ex)
-    #loads dataframe
+
+    # loads dataframe
     def load(self):
+
         try:
             with open(self.name + '.pickle', "rb") as f:
                 return pickle.load(f)
