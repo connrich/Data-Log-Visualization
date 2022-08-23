@@ -18,6 +18,10 @@ class GraphWidget(pg.PlotWidget):
         # Set graph title
         self.setTitle('Trends', color='black')
 
+        # Add legend to the graph
+        self.legend = self.addLegend(pen=pg.mkPen('black'))
+        self.legend.hide()
+
         # Use custom axis for x axis
         self.xaxis = TimeAxisItem('bottom')
         self.setAxisItems({'bottom': self.xaxis})
@@ -31,6 +35,15 @@ class GraphWidget(pg.PlotWidget):
         self.getAxis('left').setTextPen('black')
         self.getAxis('bottom').setPen('black')
         self.getAxis('bottom').setTextPen('black')
+    
+    def showLegend(self, show: bool) -> None:
+        '''
+        Show/hide the legend on the graph
+        '''
+        if show:
+            self.legend.show()
+        else:
+            self.legend.hide()
 
 
 
