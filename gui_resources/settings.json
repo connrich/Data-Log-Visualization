@@ -1,1 +1,1 @@
-{"delimiter": ";", "decimal": ",", "date_time_format": "%d.%m.%Y %H:%M:%S", "recent_date_time_format": ["%d/%m/%Y %I:%M:%S %p", "%d.%m.%Y %H:%M:%S"]}
+{"delimiter": ",", "decimal": ".", "date_time_format": "%d/%m/%Y %I:%M:%S %p", "recent_date_time_format": ["%d/%m/%Y %I:%M:%S %p", "%d.%m.%Y %H:%M:%S"]}

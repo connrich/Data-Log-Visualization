@@ -33,6 +33,7 @@ from gui_resources.style import StyleSheet as SS
 from gui_resources.error_message import ErrorMessage
 from gui_resources.infographic_options_page import InfographicOptions
 from gui_resources.date_time_input_widget import DateTimeInput
+from gui_resources.resource_path import resource_path
 
 
 
@@ -47,8 +48,8 @@ class MainWindow(QMainWindow):
         self.loadSettings()
 
         # Main window settings
-        self.setWindowTitle('Trends')
-        self.setWindowIcon(QIcon('gui_resources\Quantum_icon.png'))
+        self.setWindowTitle('QuantumView')
+        self.setWindowIcon(QIcon(resource_path('gui_resources\Quantum_icon.png')))
 
         # Add graphing widget
         self.GraphWidget = GraphWidget()

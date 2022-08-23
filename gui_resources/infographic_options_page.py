@@ -12,6 +12,7 @@ from infographic import Infographic
 from gui_resources.style import StyleSheet as SS
 from gui_resources.date_time_input_widget import DateTimeInput
 from gui_resources.error_message import ErrorMessage
+from gui_resources.resource_path import resource_path
 
 
 
@@ -73,7 +74,7 @@ class InfographicOptions(QWidget):
         self.layout.addWidget(self.BubbleList)
 
         # Load list of possible bubbles
-        with open('Infographic Settings\\bubbles.json', 'r') as json_file:
+        with open(resource_path('Infographic Settings\\bubbles.json'), 'r') as json_file:
             bubbles = json.load(json_file)
 
         # Add checkboxes for each bubble
@@ -90,7 +91,7 @@ class InfographicOptions(QWidget):
         Iterates through the Infographic Settings folder and populates the
         drop down menu
         '''
-        for file_name in os.listdir('Infographic Settings'):
+        for file_name in os.listdir(resource_path('Infographic Settings')):
             file_name = file_name.split('.')[0]
             # Check if name is a number
             if file_name.isnumeric():
@@ -101,7 +102,8 @@ class InfographicOptions(QWidget):
         Populates a list of plot types based on the Infographic Settings json file
         '''
         # Load list of plot types
-        with open(f'Infographic Settings\\{project_number}.json', 'r') as json_file:
+        path = f'Infographic Settings\\{project_number}.json'
+        with open(resource_path(path), 'r') as json_file:
             plot_types = json.load(json_file)
 
         # Clear old values
