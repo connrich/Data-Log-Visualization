@@ -14,8 +14,8 @@ PyQt packages
 '''
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
                             QAction, QFileDialog, QScrollArea, QToolBar, \
-                            QCheckBox, QPushButton, QDateTimeEdit, QLabel, QMenu
-from PyQt5.QtCore import Qt, QPointF, QDateTime
+                            QCheckBox, QPushButton, QLabel, QMenu
+from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QIcon, QCloseEvent
 
 '''
@@ -26,7 +26,6 @@ import pandas as pd
 '''
 Custom packages
 '''
-from data_object import Data
 from gui_resources.graph_widget import GraphWidget
 from gui_resources.data_selection_widget import DataSelectionWidget
 from gui_resources.settings_window import SettingsWindow
@@ -125,7 +124,7 @@ class MainWindow(QMainWindow):
         self.MenuBar.addMenu(self.FileMenu)
 
         # Add 'Edit' menu option
-        self.EditMenu = QMenu('Edit')
+        self.EditMenu = QMenu('Data')
         self.MenuBar.addMenu(self.EditMenu)
 
         # Add 'View' menu option

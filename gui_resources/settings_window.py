@@ -2,8 +2,7 @@ import sys
 import os
 import json
 
-from PyQt5.QtWidgets import (QWidget, QLabel, QGridLayout, QPushButton,  
-                            QRadioButton, QHBoxLayout, QCheckBox, QButtonGroup, 
+from PyQt5.QtWidgets import (QWidget, QLabel, QGridLayout, QPushButton, 
                             QLineEdit, QApplication, QComboBox)
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt

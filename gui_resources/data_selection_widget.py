@@ -2,12 +2,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, \
                             QPushButton, QColorDialog, QCheckBox, QLabel
 from pandas import DataFrame
-import pandas as pd
 import pyqtgraph as pg
 import sys
 import random
 import numpy as np
-from datetime import datetime
 
 from gui_resources.style import StyleSheet as SS
 from gui_resources.style import Font

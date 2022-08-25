@@ -1,15 +1,15 @@
 import json
 import os
 
-from PyQt5.QtWidgets import QWidget, QGridLayout, QCheckBox, QScrollArea, \
-                            QVBoxLayout, QLabel, QPushButton, QListWidget, \
-                            QListWidgetItem, QMainWindow, QComboBox, QDateTimeEdit
+from PyQt5.QtWidgets import QWidget, QGridLayout, \
+                            QLabel, QPushButton, QListWidget, \
+                            QListWidgetItem, QMainWindow, QComboBox
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import QDateTime
 
 import pandas as pd
 
 from infographic import Infographic
-from gui_resources.style import StyleSheet as SS
 from gui_resources.date_time_input_widget import DateTimeInput
 from gui_resources.error_message import ErrorMessage
 from gui_resources.resource_path import resource_path
@@ -43,7 +43,7 @@ class InfographicOptions(QWidget):
         self.ProjectNumberCombo = QComboBox()
         self.populateProjectNumbers()
         self.ProjectNumberCombo.currentTextChanged.connect(
-            lambda text: self.populatePlotList(text)
+            lambda text: self.populateWindow(text)
             )
         self.layout.addWidget(self.ProjectNumberCombo)
 
@@ -97,10 +97,18 @@ class InfographicOptions(QWidget):
             if file_name.isnumeric():
                 self.ProjectNumberCombo.addItem(file_name)
 
-    def populatePlotList(self, project_number: str) -> None:
+    def populateWindow(self, project_number: str) -> None:
         '''
         Populates a list of plot types based on the Infographic Settings json file
         '''
+        # Update the time window to the current min/max of loaded data
+        self.StartDateTime.setDateTime(
+            QDateTime.fromTime_t(int(self.MainWindow.loadedData.iloc[0]['TimeString']))
+        )
+        self.EndDateTime.setDateTime(
+            QDateTime.fromTime_t(int(self.MainWindow.loadedData.iloc[-1]['TimeString']))
+        )
+
         # Load list of plot types
         path = f'Infographic Settings\\{project_number}.json'
         with open(resource_path(path), 'r') as json_file:
@@ -171,7 +179,7 @@ class InfographicOptions(QWidget):
         self.PlotList.clear()
 
         # Populate plots based on current project number
-        self.populatePlotList(self.ProjectNumberCombo.currentText())
+        self.populateWindow(self.ProjectNumberCombo.currentText())
 
         # Show the window 
         super().show()
