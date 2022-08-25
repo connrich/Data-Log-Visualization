@@ -5,6 +5,7 @@ import sys
 from datetime import datetime
 import os
 import json
+import pickle
 import ctypes
 from platform import system
 
@@ -13,8 +14,8 @@ PyQt packages
 '''
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
                             QAction, QFileDialog, QScrollArea, QToolBar, \
-                            QCheckBox, QPushButton, QDateTimeEdit, QLabel, QMenu
-from PyQt5.QtCore import Qt, QPointF, QDateTime
+                            QCheckBox, QPushButton, QLabel, QMenu
+from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QIcon, QCloseEvent
 
 '''
@@ -245,11 +246,14 @@ class MainWindow(QMainWindow):
 
         # Import depending on file type
         if filetype == 'pickle':
-            file = Data(607)
-            #loads pivoted dataframe
-            df = file.display()
-            #dates to UNIX
-            df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+            try:
+                with open(resource_path(path), "rb") as f:
+                    df = pickle.load(f)
+                #dates to UNIX
+                df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+            except Exception as ex:
+                ErrorMessage(f"Error during unpickling object (Possibly unsupported)\nException: {ex}")
+                return
         elif filetype == 'csv':
             try:
                 # Read the CSV file at the path
