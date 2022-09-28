@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from dotenv import load_dotenv, find_dotenv
 import sys
 import time
 import os
@@ -12,12 +13,23 @@ from data_object import Data
 
 
 
+# Load hidden variables
+load_dotenv(find_dotenv())
+
+# VPN log in page
+stridelinx_address = 'https://connect.stridelinx.com/'
+# Username for StridLinx account
+stridelinx_username = os.getenv('stridelinx_username')
+# Password for StrideLinx account
+stridelinx_password = os.getenv('stridelinx_password')
+
+
 # HMI address
-address = '192.168.0.102'
+hmi_address = '192.168.0.102'
 # Username for log in
-username = 'Administrator'
+hmi_username = os.getenv('hmi_username')
 # Password for log in
-password = 'admin'
+hmi_password = os.getenv('hmi_password')
 
 # Names of files to download
 csv_names = ['System_Sensor_log0.csv']
@@ -59,15 +71,15 @@ def download_log(args):
     driver = webdriver.Chrome(service=service, options=options)
 
     # Navigate to HMI webserver
-    driver.get(f'http://{address}')
+    driver.get(f'http://{hmi_address}')
 
     # Enter login name
     username_field = driver.find_element(By.NAME, 'Login')
-    username_field.send_keys(username)
+    username_field.send_keys(hmi_username)
 
     # Enter password
     password_field = driver.find_element(By.NAME, 'Password')
-    password_field.send_keys(password)
+    password_field.send_keys(hmi_password)
 
     # Click the login button
     load_then_click('/html/body/table[2]/tbody/tr/td[1]/table/tbody/tr[1]/td/form/table/tbody/tr[3]/td/input')
@@ -100,3 +112,7 @@ def download_log(args):
 
 if __name__ == '__main__':
     download_log(sys.argv)
+    print(stridelinx_username)
+    print(stridelinx_password)
+    print(hmi_username)
+    print(hmi_password)
