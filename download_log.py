@@ -6,7 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 import sys
 import time
 import os
-import pandas as pd
 
 # Custom library imports
 from data_object import Data
@@ -19,14 +18,14 @@ address = '192.168.0.102'
 username = 'Administrator'
 # Password for log in
 password = 'admin'
-#
-# # Names of files to download
+
+# Names of files to download
 csv_names = ['System_Sensor_log0.csv']
-#
-#
-#
+
+
+
 def download_log(args):
-#     # Custom function for waiting for elements
+    # Custom function for waiting for elements to load 
     def load_then_click(xpath):
         try:
             element = WebDriverWait(driver, 20).until(
@@ -37,6 +36,7 @@ def download_log(args):
             print(e)
 
     # Waits until all downloads are completed
+    # File names will have '.crdownload' file type until download is fully complete
     def wait_for_downloads():
         while any([filename.endswith(".crdownload") for filename in
                 os.listdir(download_path)]):
@@ -49,6 +49,7 @@ def download_log(args):
     service = Service(executable_path='chromedriver_win32/chromedriver.exe')
 
     # Options for the service
+    # Sets the Chrome download path
     options = webdriver.ChromeOptions()
     options.add_experimental_option('detach', True)
     prefs = {"download.default_directory": download_path}
@@ -57,7 +58,7 @@ def download_log(args):
     # Initialize web driver
     driver = webdriver.Chrome(service=service, options=options)
 
-    # Navigate to website
+    # Navigate to HMI webserver
     driver.get(f'http://{address}')
 
     # Enter login name
@@ -91,18 +92,9 @@ def download_log(args):
     # Ends the session by closing all windows and terminating the driver
     driver.quit()
 
-
+    # Merge the downloaded data into the database
     file = Data(607)
     file.merge(csv_names[0])
-
-
-
-
-
-
-
-
-
 
 
 
