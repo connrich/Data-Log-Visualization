@@ -83,7 +83,7 @@ class Infographic():
         date = month + ' ' + day + ', ' + year
 
         # Create title and add to axis
-        title = self.name + ' Remote Monitoring Report: ' + date
+        title = "Your Company's" + ' Remote Monitoring Report: ' + "August 8, 2022"
         ax.annotate(title, (0.5, 0.5),va = 'center', ha = 'center',size = 24, color='#e3e3e3')
 
         # Axis visibility

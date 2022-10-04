@@ -36,6 +36,7 @@ class Data():
     # cleans data
     def clean(self):
         self.M = pd.DataFrame.dropna(self.M)
+        self.M['TimeString'] = pd.to_datetime(self.M['TimeString'], format='%d.%m.%Y %H:%M:%S')
         self.M = self.M.drop_duplicates(subset = ['TimeString','VarName'])
         self.M.sort_values(by="TimeString", inplace=True)
         self.save()
@@ -92,3 +93,7 @@ def load_project_json(proj_number: int) -> dict:
     return settings
 
 
+if __name__ == '__main__':
+    file = Data(607)
+    file.clean()
+    print(file.display())

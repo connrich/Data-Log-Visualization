@@ -70,6 +70,9 @@ def download_log(args):
     # Initialize web driver
     driver = webdriver.Chrome(service=service, options=options)
 
+    # Navigate to StrideLinx
+    driver.get(stridelinx_address)
+
     # Navigate to HMI webserver
     driver.get(f'http://{hmi_address}')
 
