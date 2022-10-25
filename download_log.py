@@ -17,7 +17,7 @@ from data_object import Data
 load_dotenv(find_dotenv())
 
 # VPN log in page
-stridelinx_address = 'https://connect.stridelinx.com/'
+stridelinx_address = 'www.stridelinx.com/portal/login?next=%2Fdevices'
 # Username for StridLinx account
 stridelinx_username = os.getenv('stridelinx_username')
 # Password for StrideLinx account
@@ -27,9 +27,10 @@ stridelinx_password = os.getenv('stridelinx_password')
 # HMI address
 hmi_address = '192.168.0.102'
 # Username for log in
-hmi_username = os.getenv('hmi_username')
+hmi_username = os.getenv('HMI_USERNAME')
 # Password for log in
-hmi_password = os.getenv('hmi_password')
+hmi_password = os.getenv('HMI_PASSWORD')
+
 
 # Names of files to download
 csv_names = ['System_Sensor_log0.csv']
@@ -70,8 +71,15 @@ def download_log(args):
     # Initialize web driver
     driver = webdriver.Chrome(service=service, options=options)
 
-    # Navigate to StrideLinx
-    driver.get(stridelinx_address)
+    # Navigate to VPN page
+    driver.get(f'http://{stridelinx_address}')
+
+    username_field = driver.find_element(By.XPATH("//input[@name='emailAddress' and @placeholder='E-mail address']"))
+    username_field.send_keys(stridelinx_username)
+
+    password_field = driver.find_element(By.NAME, 'Password')
+    password_field.send_keys(stridelinx_password)
+
 
     # Navigate to HMI webserver
     driver.get(f'http://{hmi_address}')
@@ -114,6 +122,7 @@ def download_log(args):
 
 
 if __name__ == '__main__':
+
     download_log(sys.argv)
     print(stridelinx_username)
     print(stridelinx_password)
