@@ -39,10 +39,10 @@ csv_names = ['System_Sensor_log0.csv']
 
 def download_log(args):
     # Custom function for waiting for elements to load 
-    def load_then_click(xpath):
+    def load_then_click(element_type, element_path):
         try:
             element = WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located((By.XPATH, xpath))
+                EC.presence_of_element_located((element_type, element_path))
             )
             element.click()
         except Exception as e:
@@ -93,17 +93,17 @@ def download_log(args):
     password_field.send_keys(hmi_password)
 
     # Click the login button
-    load_then_click('/html/body/table[2]/tbody/tr/td[1]/table/tbody/tr[1]/td/form/table/tbody/tr[3]/td/input')
+    load_then_click(By.XPATH, '/html/body/table[2]/tbody/tr/td[1]/table/tbody/tr[1]/td/form/table/tbody/tr[3]/td/input')
 
     # Click the file browser button
-    load_then_click('/html/body/table[2]/tbody/tr/td[1]/table/tbody/tr[11]/td[3]/a')
+    load_then_click(By.XPATH, '/html/body/table[2]/tbody/tr/td[1]/table/tbody/tr[11]/td[3]/a')
 
     # Click the USB storage button
-    load_then_click('/html/body/table[2]/tbody/tr/td[3]/table[2]/tbody/tr[9]/td[2]/a/b/font')
+    load_then_click(By.XPATH, '/html/body/table[2]/tbody/tr/td[3]/table[2]/tbody/tr[9]/td[2]/a/b/font')
 
     # Iterate through file names and click each download link
     for name in csv_names:
-        load_then_click(f"//a[text()='{name}']")
+        load_then_click(By.XPATH, f"//a[text()='{name}']")
 
     # Display downloads page
     driver.get("chrome://downloads/")
