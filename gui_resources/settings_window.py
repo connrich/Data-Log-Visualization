@@ -63,6 +63,7 @@ class SettingsWindow(QWidget):
         # Populate current settings to window
         self.DelimiterSelection.setText(self.settings['delimiter'])
         self.DecimalSelection.setText(self.settings['decimal'])
+        self.TimeHeaderString.setText(self.settings['time_header_title'])
         self.DateTimeFormatComboBox.clear()
         self.DateTimeFormatComboBox.addItems(self.settings['recent_date_time_format'])
         self.DateTimeFormatLineEdit.setText(self.settings['date_time_format'])
@@ -78,6 +79,7 @@ class SettingsWindow(QWidget):
         # Save csv import settings
         self.settings['delimiter'] = self.DelimiterSelection.text()
         self.settings['decimal'] = self.DecimalSelection.text()
+        self.settings['time_header_title'] = self.TimeHeaderString.text()
         self.settings['date_time_format'] = self.DateTimeFormatLineEdit.text()
 
         date_time_formats = [
@@ -111,6 +113,12 @@ class SettingsWindow(QWidget):
         self.CSVLayout.addWidget(self.DecimalSelectionLabel, 0, 2)
         self.DecimalSelection = QLineEdit()
         self.CSVLayout.addWidget(self.DecimalSelection, 0, 3)
+
+        # Input for the time column header
+        self.TimeHeaderStringLabel = QLabel('Time Header Title')
+        self.CSVLayout.addWidget(self.TimeHeaderStringLabel, 1, 0)
+        self.TimeHeaderString = QLineEdit()
+        self.CSVLayout.addWidget(self.TimeHeaderString, 1, 1, 1, 3)
 
         # Input for date/time format of the data
         self.DateTimeFormatLabel = QLabel('Date/Time Format')

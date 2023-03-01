@@ -75,11 +75,18 @@ class DataSet(QHBoxLayout):
         self.GraphWidget = graph
 
         # Construct a plot item that can be shown/hidden on the parent graph
-        self.PlotDataItem = pg.PlotDataItem(
-            data.index,
-            data['VarValue'].to_list(),
-            name=name
-            )
+        try:
+            self.PlotDataItem = pg.PlotDataItem(
+                data.index,
+                data['VarValue'].to_list(),
+                name=name
+                )
+        except:
+            self.PlotDataItem = pg.PlotDataItem(
+                data.iloc[:,0],
+                data[name].to_list(),
+                name=name
+                )
 
         # Construct display color widget
         self.color = QPushButton()

@@ -70,6 +70,9 @@ class TimeAxisItem(pg.AxisItem):
         Returns a list of date/time formatted strings for display on axis
         '''
         try: 
-            return [str(datetime.fromtimestamp(value).strftime(self.str_format)) for value in values]
+            # May need to change the fromtimestamp function depending on timezone issues
+            # utcfromtimestamp
+            # fromtimestamp
+            return [str(datetime.utcfromtimestamp(value).strftime(self.str_format)) for value in values]
         except:
             return []

@@ -252,7 +252,7 @@ class MainWindow(QMainWindow):
             except Exception as ex:
                 print("Error during unpickling object (Possibly unsupported): ", ex)
             #dates to UNIX
-            df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+            df[self.settings['time_header_title']] = df[self.settings['time_header_title']].map(pd.Timestamp.timestamp)
         elif filetype == 'csv':
             try:
                 # Read the CSV file at the path
@@ -274,17 +274,21 @@ class MainWindow(QMainWindow):
                 # Catch empty data frame
                 if df.empty:
                     raise Exception('Loaded csv file is empty')
+
                 # Convert times to Pandas TimeStamp, removes failed conversions 
                 date_time_format = self.settings['date_time_format']
-                df['TimeString'] = pd.to_datetime(df['TimeString'], format=date_time_format, errors='coerce')
-                df = df.dropna(subset=['TimeString'])
+                time_header_title = self.settings['time_header_title']
+                df[time_header_title] = pd.to_datetime(df[time_header_title], format=date_time_format, errors='coerce')
+                df = df.dropna(subset=[time_header_title])
+
                 if df.empty:
                     raise Exception((
                         f'Error with date/time formatting \n'
                         f'Current format: {date_time_format}'
                         ))
                 # Convert times to UNIX integer format 
-                df['TimeString'] = df['TimeString'].map(pd.Timestamp.timestamp)
+                df[time_header_title] = df[time_header_title].map(pd.Timestamp.timestamp)
+
             except Exception as ex:
                 ErrorMessage(f"Failed to load csv file. \nException:  {ex} \n\nAlso check if the correct delimiter and decimal character have been selected in settings. \n \
                             Current delimiter:   {self.settings['delimiter']} \n \
@@ -301,14 +305,21 @@ class MainWindow(QMainWindow):
         # Save new data
         self.loadedData = df
 
-        # Pivot the dataframe so it is easier to select data by tag name
-        pivot_table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
+        # Check if the data is from a Siemens log
+        # If it is we pivot it so it is easier to work with
+        if 'VarName' in df.columns:
+            # Pivot the dataframe so it is easier to select data by tag name
+            pivot_table = pd.pivot_table(data=df, index=['VarName', 'TimeString'])
 
-        # Find all unique device tags and store the data in a dictionary
-        # Dictionary key = tag string
-        # Dictionary value = dataframe with time and device value
-        for name in pivot_table.index.unique(level='VarName'):
-            self.DataSelectionWidget.addDataSet(name, pivot_table.loc[(name, )], self.GraphWidget)
+            # Find all unique device tags and store the data in a dictionary
+            # Dictionary key = tag string
+            # Dictionary value = dataframe with time and device value
+            for name in pivot_table.index.unique(level='VarName'):
+                self.DataSelectionWidget.addDataSet(name, pivot_table.loc[(name, )], self.GraphWidget)
+        else:
+            for name in df.columns:
+                self.DataSelectionWidget.addDataSet(name, df, self.GraphWidget)
+
 
     def clearLoadedDatasets(self) -> None:
         '''
@@ -327,7 +338,7 @@ class MainWindow(QMainWindow):
 
         # Try formatting x value to a date/time format
         try:
-            x_val = str(datetime.fromtimestamp(p.x()).strftime('%m/%d/%Y %H:%M:%S'))
+            x_val = str(datetime.utcfromtimestamp(p.x()).strftime('%m/%d/%Y %H:%M:%S'))
         except:
             x_val = p.x()
         
