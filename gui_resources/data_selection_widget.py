@@ -75,6 +75,7 @@ class DataSet(QHBoxLayout):
         self.GraphWidget = graph
 
         # Construct a plot item that can be shown/hidden on the parent graph
+        # Try Siemens pivot table format first
         try:
             self.PlotDataItem = pg.PlotDataItem(
                 data.index,

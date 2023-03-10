@@ -47,9 +47,17 @@ class SettingsWindow(QWidget):
         self.CSVimportLabel.setAlignment(Qt.AlignCenter)
         self.MainLayout.addWidget(self.CSVimportLabel)
 
+        # Add selection for default settings
+        # self.defaultSettingsLabel = QLabel('Default Settings')
+        # self.MainLayout.addWidget(self.defaultSettingsLabel, 1, 0)
+        self.defaultSettingsCombo = QComboBox()
+        self.defaultSettingsCombo.addItems(['Default Settings', 'Siemens', 'StrideLinx'])
+        self.defaultSettingsCombo.textActivated.connect(self.defaultSettings)
+        self.MainLayout.addWidget(self.defaultSettingsCombo, 1, 0)   
+
         # Add csv import settings
         csv_settings = self.constructCSVsettings()
-        self.MainLayout.addLayout(csv_settings, 1, 0)
+        self.MainLayout.addLayout(csv_settings, 2, 0)
 
         # Button to apply the settings 
         self.ApplyButton = QPushButton('Apply')
@@ -129,6 +137,21 @@ class SettingsWindow(QWidget):
         self.CSVLayout.addWidget(self.DateTimeFormatComboBox, 2, 1, 1, 3)
 
         return self.CSVLayout
+
+    def defaultSettings(self) -> None:
+        selected = self.defaultSettingsCombo.currentText()
+
+        if selected == 'Siemens':
+            self.DelimiterSelection.setText(';')
+            self.DecimalSelection.setText(',')
+            self.TimeHeaderString.setText('TimeString')
+            self.DateTimeFormatLineEdit.setText('%d.%m.%Y %H:%M:%S')
+
+        elif selected == 'StrideLinx':
+            self.DelimiterSelection.setText(',')
+            self.DecimalSelection.setText('.')
+            self.TimeHeaderString.setText('time')
+            self.DateTimeFormatLineEdit.setText('%Y-%m-%d %H:%M:%S.%f')
 
 
 
