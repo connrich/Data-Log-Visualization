@@ -253,7 +253,7 @@ class MainWindow(QMainWindow):
                 print("Error during unpickling object (Possibly unsupported): ", ex)
             #dates to UNIX
             df[self.settings['time_header_title']] = df[self.settings['time_header_title']].map(pd.Timestamp.timestamp)
-        elif filetype == 'csv':
+        elif filetype == 'csv' or filetype == 'txt':
             try:
                 # Read the CSV file at the path
                 # Also catches on_bad_lines/error_bad_lines deprecation error
