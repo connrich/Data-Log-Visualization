@@ -384,8 +384,5 @@ if __name__ == '__main__':
     MainWindow = CSV_GUI()
     MainWindow.show()
 
-    # MainWindow.loadData("P619_2022_05_020.csv")
-    # MainWindow.loadData("Logs/System_Sensor_log0.csv")
-
     # Terminated when the application is closed 
     sys.exit(app.exec())

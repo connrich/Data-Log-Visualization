@@ -12,9 +12,10 @@ import pickle
 '''
 PyQt packages
 '''
-from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QMenuBar, \
-                            QAction, QFileDialog, QScrollArea, QToolBar, \
-                            QCheckBox, QPushButton, QLabel, QMenu
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget, \
+                            QAction, QFileDialog, QGridLayout, QToolBar, \
+                            QCheckBox, QPushButton, QLabel, QMenuBar, QMenu, \
+                            QWidgetAction
 from PyQt5.QtCore import Qt, QPointF
 from PyQt5.QtGui import QIcon, QCloseEvent
 
@@ -28,10 +29,8 @@ Custom packages
 '''
 from gui_resources.graph_widget import GraphWidget
 from gui_resources.data_selection_widget import DataSelectionWidget
-from gui_resources.settings_window import SettingsWindow
 from gui_resources.style import StyleSheet as SS
 from gui_resources.error_message import ErrorMessage
-from gui_resources.infographic_options_page import InfographicOptions
 from gui_resources.date_time_input_widget import DateTimeInput
 from gui_resources.resource_path import resource_path
 
@@ -48,7 +47,60 @@ class MODBUS_GUI(QMainWindow):
         self.setWindowTitle('QuantumView')
         self.setWindowIcon(QIcon(resource_path('gui_resources\images\Quantum_icon.png')))
 
+        # Construct and add the menu to the window
+        self.constructMenu()
 
+        # Construct and add the tool bar to the window
+        self.constructToolbar()
+
+        # Construct and add the graphs to the window
+        self.Graphs = MultiGraphWidget()
+        self.setCentralWidget(self.Graphs)
+    
+    def constructMenu(self) -> None:
+        self.MenuBar = QMenuBar()
+        self.setMenuBar(self.MenuBar)
+
+        self.ConnectMenu = QMenu('Connect')
+        self.MenuBar.addMenu(self.ConnectMenu)
+
+        self.ConnectMenu.addAction('test')
+
+        self.label = QLabel('dsafijosijdfoijsadf')
+        self.connectAction = QWidgetAction(self.label)
+        self.connectAction.setDefaultWidget(QLabel('dsafijosijdfoijsadf'))
+        self.connectAction.triggered.connect(lambda: print('estsetsetsetset'))
+        self.ConnectMenu.addAction(self.connectAction)
+
+    def constructToolbar(self) -> None:
+        self.ToolBar = QToolBar()
+        self.addToolBar(self.ToolBar)
+
+
+
+class MultiGraphWidget(QWidget):
+    def __init__(self) -> None:
+        super().__init__()
+
+        # Set layout of widget
+        self.layout = QGridLayout()
+        self.setLayout(self.layout)
+
+        # Iteratively create graphs
+        self.createGraphs()
+
+    def createGraphs(self) -> None:
+        # Create 12 graphs and add them to the layout
+        for row in range(3):
+            for col in range(4):
+                graph = GraphWidget()
+                graph.hide()
+                self.layout.addWidget(graph, row, col)
+        # Only show 1 graph to start
+        self.graphAt(0, 0).show() 
+
+    def graphAt(self, row: int, col: int) -> GraphWidget:
+        return self.layout.itemAtPosition(row, col).widget() 
 
 
 
@@ -60,18 +112,8 @@ if __name__ == '__main__':
     # Create the appliction instance
     app = QApplication(sys.argv)
 
-    # graph = GraphWidget()
-    # graph.show()
     window = MODBUS_GUI()
 
-    d = QDockWidget()
-    d.setWindowTitle('Test')
-    window.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, d)
-
-    t = QToolBar()
-    window.addToolBar(t)
-
     window.show()
-    
 
     sys.exit(app.exec())
