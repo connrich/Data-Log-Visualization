@@ -1,4 +1,4 @@
-from gui import MainWindow
+from csv_gui import MainWindow
 
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout
 from PyQt5 import QtCore

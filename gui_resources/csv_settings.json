@@ -1,0 +1,1 @@
+{"delimiter": "\t", "decimal": ",", "time_header_title": "TimeString", "date_time_format": "%d.%m.%Y %H:%M:%S", "recent_date_time_format": ["%Y-%m-%d %H:%M:%S.%f", "%d/%m/%Y %I:%M:%S %p", "%d.%m.%Y %H:%M:%S", "%Y-%m-%d %I:%M:%S %p"]}
