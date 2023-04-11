@@ -43,7 +43,7 @@ class ModbusLogger:
         # Append the data to the active log 
         self.log = pd.concat([self.log, self.readAllRegisters()], axis=0)
 
-    def connect(self, ip: str, port: int, unit_id: int=1) -> ModbusClient:
+    def connect(self, ip: str='192.168.0.1', port: int=503, unit_id: int=2) -> ModbusClient:
         try:
             self.client = ModbusClient(host=ip, port=port, unit_id=unit_id, auto_open=True, auto_close=False) 
             return self.client
@@ -56,7 +56,11 @@ class ModbusLogger:
             return pd.DataFrame([regs], index=[datetime.now()])
         else:
             raise Exception('Failed to read registers')
-    
+        
+    def toCsv(self, path: str) -> None:
+        self.log = self.log.rename_axis('time')
+        self.log.to_csv(path)
+
     def clearLogData(self) -> None:
         self.log = self.log[0:0]
         
@@ -71,6 +75,9 @@ if __name__ == '__main__':
     poll_time = 1
     plc_ip = "192.168.0.1"
     csv_path = "Logs/ModbusTestLog.csv"
+        
+    # response = os.system("ping " + plc_ip)
+    # print('Response: ' + str(response))
 
     logger = ModbusLogger(csv_path, tag_map=[0 for _ in range(50)])
     logger.connect(plc_ip, 503, 2)
@@ -81,8 +88,5 @@ if __name__ == '__main__':
     logger.logRegisters()
     print(logger.log)
 
-    # # Dump csv
-    # logger.log.to_csv('C:\\Users\\Quantum\\Desktop\\Data Log Visualization\\test.csv')
-
-    # response = os.system("ping " + plc_ip)
-    # print('Response: ' + str(response))
+    # Dump csv
+    logger.toCsv('C:\\Users\\Quantum\\Desktop\\Data Log Visualization\\modbus_test.csv')

@@ -39,7 +39,7 @@ from gui_resources.resource_path import resource_path
 
 class CSV_GUI(QMainWindow):
     '''
-    The main GUI window used for the application
+    The main GUI window used for the csv viewer
     '''
     def __init__(self) -> None:
         super().__init__()
