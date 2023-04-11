@@ -99,7 +99,7 @@ class SettingsWindow(QWidget):
         self.settings['recent_date_time_format'] = date_time_formats
 
         # Write settings to the settings file
-        with open(os.path.join(os.path.dirname(__file__), 'settings.json'), 'w+') as json_file:
+        with open(os.path.join(os.path.dirname(__file__), 'csv_settings.json'), 'w+') as json_file:
             json.dump(self.settings, json_file)
 
     def constructCSVsettings(self) -> QGridLayout:

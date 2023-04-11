@@ -9,7 +9,7 @@ from PyQt5.QtCore import QDateTime
 
 import pandas as pd
 
-from infographic import Infographic
+from gui_resources.infographic_logging.infographic import Infographic
 from gui_resources.date_time_input_widget import DateTimeInput
 from gui_resources.error_message import ErrorMessage
 from gui_resources.resource_path import resource_path
@@ -74,7 +74,7 @@ class InfographicOptions(QWidget):
         self.layout.addWidget(self.BubbleList)
 
         # Load list of possible bubbles
-        with open(resource_path('Infographic Settings\\bubbles.json'), 'r') as json_file:
+        with open(resource_path('gui_resources\\infographic_logging\\Infographic Settings\\bubbles.json'), 'r') as json_file:
             bubbles = json.load(json_file)
 
         # Add checkboxes for each bubble
@@ -91,7 +91,7 @@ class InfographicOptions(QWidget):
         Iterates through the Infographic Settings folder and populates the
         drop down menu
         '''
-        for file_name in os.listdir(resource_path('Infographic Settings')):
+        for file_name in os.listdir(resource_path('gui_resources\\infographic_logging\\Infographic Settings')):
             file_name = file_name.split('.')[0]
             # Check if name is a number
             if file_name.isnumeric():

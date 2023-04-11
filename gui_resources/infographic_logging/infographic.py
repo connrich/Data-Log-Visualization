@@ -1,4 +1,4 @@
-from data_object import Data
+from gui_resources.infographic_logging.data_object import Data
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np

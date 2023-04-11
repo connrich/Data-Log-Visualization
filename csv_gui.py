@@ -37,7 +37,7 @@ from gui_resources.resource_path import resource_path
 
 
 
-class MainWindow(QMainWindow):
+class CSV_GUI(QMainWindow):
     '''
     The main GUI window used for the application
     '''
@@ -381,7 +381,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     # Create window
-    MainWindow = MainWindow()
+    MainWindow = CSV_GUI()
     MainWindow.show()
 
     # MainWindow.loadData("P619_2022_05_020.csv")

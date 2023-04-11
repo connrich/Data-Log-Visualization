@@ -3,7 +3,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QToolBar
 from PyQt5.QtCore import Qt
 
-from csv_gui import MainWindow
+from csv_gui import CSV_GUI
 
 
 
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # graph.show()
     window = QMainWindow()
 
-    w = MainWindow()
+    w = CSV_GUI()
 
     window.setCentralWidget(w)
 
