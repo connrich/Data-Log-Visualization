@@ -63,9 +63,11 @@ class MODBUS_GUI(QMainWindow):
         self.setCentralWidget(self.Graphs)
     
     def constructMenuBar(self) -> None:
+        # Create/add menu bar
         self.MenuBar = QMenuBar()
         self.setMenuBar(self.MenuBar)
 
+        # Create/construct connection menu
         self.ConnectMenu = QMenu('Connect')
         self.constructConnectMenu()
         self.MenuBar.addMenu(self.ConnectMenu)
@@ -90,6 +92,7 @@ class MODBUS_GUI(QMainWindow):
         self.ConnectMenu.addAction(self.connectAction)
 
     def constructToolbar(self) -> None:
+        # Create/add the toolbar
         self.ToolBar = QToolBar()
         self.addToolBar(self.ToolBar)
 

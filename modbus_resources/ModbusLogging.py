@@ -44,6 +44,7 @@ class ModbusLogger:
         self.log = pd.concat([self.log, self.readAllRegisters()], axis=0)
 
     def connect(self, ip: str='192.168.0.1', port: int=503, unit_id: int=2) -> ModbusClient:
+        # Tries to initialize a connection to a Modbus server 
         try:
             self.client = ModbusClient(host=ip, port=port, unit_id=unit_id, auto_open=True, auto_close=False) 
             return self.client
@@ -51,20 +52,33 @@ class ModbusLogger:
             raise Exception('Failed to connect')
     
     def readAllRegisters(self) -> None:
+        # Read all registers
         regs = self.client.read_holding_registers(0, len(self.tag_map))
+
+        # Check if the read was succesful
+        # If success return a dataframe with the read time as the index
         if regs is not None:
             return pd.DataFrame([regs], index=[datetime.now()])
         else:
             raise Exception('Failed to read registers')
         
     def toCsv(self, path: str) -> None:
+        '''
+        Save the currently loaded log to csv
+        '''
         self.log = self.log.rename_axis('time')
         self.log.to_csv(path)
 
     def clearLogData(self) -> None:
+        '''
+        Clears all currently loaded data
+        '''
         self.log = self.log[0:0]
         
     def isConnected(self) -> bool:
+        '''
+        Check if the connection to the server is open
+        '''
         return self.client.is_open
 
 
