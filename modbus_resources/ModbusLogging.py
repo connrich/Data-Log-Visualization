@@ -23,7 +23,7 @@ class ModbusLogger:
     '''
     Class for handling connection to Modbus server and caching a log
     '''
-    def __init__(self, save_folder: str, tag_map: dict=None, log_freq: float=1.0) -> None:
+    def __init__(self, save_folder: str=None, tag_map: dict=None, log_freq: float=1.0) -> None:
         # Absolute path to log save location
         self.save_folder = save_folder
 
