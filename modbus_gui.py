@@ -152,8 +152,19 @@ class MultiGraphWidget(QWidget):
         '''
         Show a certain array of graphs 
         '''
-        # self.hideAllGraphs()
-        print(row, col)
+        # Start by hising everything and then show what is needed
+        self.hideAllGraphs()
+
+        # Reset stretches
+        for i in range(row+1):
+            self.layout.setRowStretch(i, 1)
+        for i in range(col+1):
+            self.layout.setColumnStretch(i, 1)
+        
+        # Show all relevant graphs
+        for i in range(row+1):
+            for j in range(col+1):
+                self.graphAt(i, j).show()
     
     def hideAllGraphs(self) -> None:
         '''
