@@ -66,8 +66,8 @@ class ButtonGrid(QWidget):
     def __init__(self, rows: int, cols: int, parent: QWidget) -> None:
         super().__init__()
 
+        # Parent widget
         self.parent = parent
-        print(self.parent)
 
         # Main layout for the grid
         self.layout = QGridLayout()
@@ -103,6 +103,3 @@ class ButtonGrid(QWidget):
         for row in reversed(range(btn.row+1)):
             for col in reversed(range(btn.col+1)):
                 self.buttonAt(row, col).unselected()
-    
-    def buttonClicked(self, btn: SelectorButton) -> None:
-        self.parent.showGraphs(btn.row, btn.col)

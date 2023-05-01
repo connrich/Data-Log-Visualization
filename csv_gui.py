@@ -37,7 +37,7 @@ from gui_resources.resource_path import resource_path
 
 
 
-class CSV_GUI(QMainWindow):
+class CsvGui(QMainWindow):
     '''
     The main GUI window used for the csv viewer
     '''
@@ -381,7 +381,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     # Create window
-    MainWindow = CSV_GUI()
+    MainWindow = CsvGui()
     MainWindow.show()
 
     # Terminated when the application is closed 

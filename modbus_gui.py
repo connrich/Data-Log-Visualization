@@ -30,12 +30,12 @@ Custom packages
 from gui_resources.graph_widget import GraphWidget
 from gui_resources.resource_path import resource_path
 from gui_resources.menu_text_input import MenuTextInputWidget
-from gui_resources.graph_selection_widget import ButtonGrid
+from gui_resources.graph_layout_widget import ButtonGrid
 from modbus_resources.ModbusLogging import ModbusLogger
 
 
 
-class MODBUS_GUI(QMainWindow):
+class ModbusGui(QMainWindow):
     '''
     The main GUI window used for the Modbus viewer/logger
     '''
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # Create the appliction instance
     app = QApplication(sys.argv)
 
-    window = MODBUS_GUI()
+    window = ModbusGui()
 
     window.show()
 

@@ -21,8 +21,8 @@ Custom packages
 from gui_resources.style import StyleSheet as SS
 from gui_resources.error_message import ErrorMessage
 from gui_resources.resource_path import resource_path
-from csv_gui import CSV_GUI
-from modbus_gui import MODBUS_GUI
+from csv_gui import CsvGui
+from modbus_gui import ModbusGui
 
 
 
@@ -40,10 +40,10 @@ class MAIN_GUI(QMainWindow):
         self.TabWidget.setStyleSheet('QTabBar {font-size: 10pt; font-weight: bold;}')
         self.setCentralWidget(self.TabWidget)
 
-        self.CSVWindow = CSV_GUI()
+        self.CSVWindow = CsvGui()
         self.TabWidget.addTab(self.CSVWindow, 'CSV Viewer')
 
-        self.ModbusWindow = MODBUS_GUI()
+        self.ModbusWindow = ModbusGui()
         self.TabWidget.addTab(self.ModbusWindow, 'Modbus')
 
 
