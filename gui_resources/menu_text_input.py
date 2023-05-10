@@ -25,3 +25,6 @@ class MenuTextInputWidget(QWidgetAction):
     
     def text(self) -> str:
         return self.line_edit.text()
+
+    def setText(self, text: str) -> None:
+        self.line_edit.setText(text)

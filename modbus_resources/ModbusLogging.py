@@ -22,10 +22,13 @@ tag_map = [
 class ModbusLogger:
     '''
     Class for handling connection to Modbus server and caching a log
+    log_path: str = Absolute path to CSV log location
+    tag_map: str = Mapping modbus registers to tag names and scaling
+    log_freq: float = Time between modbus calls
     '''
-    def __init__(self, save_folder: str=None, tag_map: dict=None, log_freq: float=1.0) -> None:
+    def __init__(self, log_path: str=None, tag_map: dict=None, log_freq: float=1.0) -> None:
         # Absolute path to log save location
-        self.save_folder = save_folder
+        self.log_path = log_path
 
         # Dictionary map of tag locations and scaling
         self.tag_map = tag_map
@@ -51,7 +54,7 @@ class ModbusLogger:
         except:
             raise Exception('Failed to connect')
     
-    def readAllRegisters(self) -> None:
+    def readAllRegisters(self) -> pd.DataFrame:
         # Read all registers
         regs = self.client.read_holding_registers(0, len(self.tag_map))
 
@@ -93,7 +96,7 @@ if __name__ == '__main__':
     # response = os.system("ping " + plc_ip)
     # print('Response: ' + str(response))
 
-    logger = ModbusLogger(csv_path, tag_map=[0 for _ in range(50)])
+    logger = ModbusLogger(csv_path, tag_map=[0 for _ in range(60)])
     logger.connect(plc_ip, 503, 2)
 
     # Try 2 logging cycles and print result

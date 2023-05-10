@@ -15,7 +15,7 @@ class SelectorButton(QPushButton):
 
     selected_ss = '''
         QPushButton {
-            background-color: #cbe8f5;
+            background-color: #3378e8;
             color: white;
             border: 2px solid black;
             border-radius: 8px;

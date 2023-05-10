@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QDockWidget, QWidget, \
                             QAction, QFileDialog, QGridLayout, QToolBar, \
                             QCheckBox, QPushButton, QLabel, QMenuBar, QMenu, \
                             QWidgetAction, QLineEdit, QVBoxLayout, QComboBox
-from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtCore import Qt, QPointF, QTimer
 from PyQt5.QtGui import QIcon, QCloseEvent
 
 '''
@@ -43,7 +43,10 @@ class ModbusGui(QMainWindow):
         super().__init__()
 
         # Modbus class for data/connection management
-        self.Logger = ModbusLogger()
+        self.Logger = ModbusLogger(tag_map=[0 for _ in range(60)])
+        self.pollTimer = QTimer()
+        self.pollTimer.timeout.connect(lambda: print(self.Logger.readAllRegisters()))
+        self.pollTimer.setInterval(1000)
 
         # Main window settings
         self.setWindowTitle('QuantumView')
@@ -79,18 +82,22 @@ class ModbusGui(QMainWindow):
     def constructConnectMenu(self) -> None:
         # Input for server IP
         self.ipInput = MenuTextInputWidget('Server IP')
+        self.ipInput.setText('192.168.0.1')
         self.ConnectMenu.addAction(self.ipInput)
 
         # Input for port number
         self.portInput = MenuTextInputWidget('Port Number')
+        self.portInput.setText('503')
         self.ConnectMenu.addAction(self.portInput)
 
         # Input for unit id
         self.unitIdInput = MenuTextInputWidget('Unit Id')
+        self.unitIdInput.setText('2')
         self.ConnectMenu.addAction(self.unitIdInput)
 
         # Button to try initialize connection
         self.connectButton = QPushButton('Connect')
+        self.connectButton.clicked.connect(self.connectModbus)
         self.connectAction = QWidgetAction(self.connectButton)
         self.connectAction.setDefaultWidget(self.connectButton)
         self.ConnectMenu.addAction(self.connectAction)
@@ -114,6 +121,16 @@ class ModbusGui(QMainWindow):
         # self.numGraphs.addItem('1')
         # self.numGraphs.addItem('9')
         # self.numGraphs.currentTextChanged.connect(lambda num: self.Graphs.showGraphs(int(num)))
+    
+    def connectModbus(self) -> None:
+        self.Logger.connect(
+            ip=self.ipInput.text(),
+            port=int(self.portInput.text()),
+            unit_id=int(self.unitIdInput.text())
+        )
+
+        self.pollTimer.start()
+         
 
 
 class MultiGraphWidget(QWidget):
