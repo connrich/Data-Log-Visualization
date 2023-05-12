@@ -1,0 +1,164 @@
+[
+    {
+        "tag": "\"HP Compressor_DB\".State",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "\"CH Liquefier_DB\".State",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+        "tag": "\"HP Compressor_DB\".Alarm",
+        "scale": 1
+    },
+    {
+        "tag": "\"HP Compressor_DB\".TripHistory",
+        "scale": 1
+    },
+    {
+        "tag": "\"Purity Meter_DB\".Alarm",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "\"CH Liquefier_DB\".Alarm",
+        "scale": 1
+    },
+    {
+        "tag": "\"CH Liquefier_DB\".TripHistory",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {
+        "tag": "\"PT201\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"PT214\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "\"PT503\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"DPT511\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"AIT502\".AI.Value",
+        "scale": 100
+    },
+    {
+        "tag": "\"LT524\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"TE521\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"TE522\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"PT520\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"Purity Meter_DB\".\"Purity Downstream\"",
+        "scale": 100
+    },
+    {
+        "tag": "\"Purity Meter_DB\".\"Purity Upstream\"",
+        "scale": 100
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "\"TT903\".AI.Value",
+        "scale": 10
+    },
+    {},
+    {},
+    {},
+    {},
+    {
+        "tag": "\"PLCInputs\"",
+        "scale": 1
+    },
+    {
+        "tag": "\"PLCOutput\"",
+        "scale": 1
+    },
+    {
+        "tag": "\"InputCard1\"",
+        "scale": 1
+    },
+    {
+        "tag": "\"OutputCard2\"",
+        "scale": 1
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+]

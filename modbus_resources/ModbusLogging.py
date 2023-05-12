@@ -26,7 +26,7 @@ class ModbusLogger:
     tag_map: str = Mapping modbus registers to tag names and scaling
     log_freq: float = Time between modbus calls
     '''
-    def __init__(self, log_path: str=None, tag_map: dict=None, log_freq: float=1.0) -> None:
+    def __init__(self, log_path: str=None, tag_map: list=None, log_freq: float=1.0) -> None:
         # Absolute path to log save location
         self.log_path = log_path
 

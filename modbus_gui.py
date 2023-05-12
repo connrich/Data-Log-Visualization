@@ -29,7 +29,7 @@ Custom packages
 '''
 from gui_resources.graph_widget import GraphWidget
 from gui_resources.resource_path import resource_path
-from gui_resources.menu_text_input import MenuTextInputWidget
+from gui_resources.menu_input import MenuTextInputWidget, MenuComboInputWidget
 from gui_resources.graph_layout_widget import ButtonGrid
 from modbus_resources.ModbusLogging import ModbusLogger
 
@@ -74,6 +74,11 @@ class ModbusGui(QMainWindow):
         self.constructConnectMenu()
         self.MenuBar.addMenu(self.ConnectMenu)
 
+        # Create/construct settings menu
+        self.SettingsMenu = QMenu('Settings')
+        self.constructSettingsMenu()
+        self.MenuBar.addMenu(self.SettingsMenu)
+
         # Create/construct view menu
         self.ViewMenu = QMenu('View')
         self.constructViewMenu()
@@ -95,12 +100,30 @@ class ModbusGui(QMainWindow):
         self.unitIdInput.setText('2')
         self.ConnectMenu.addAction(self.unitIdInput)
 
+        # Tag map selection
+        self.tagMapCombo = MenuComboInputWidget('Select tag map')
+        for file in os.listdir("modbus_resources\\Tag Maps"):
+            if '.json' in file:
+                self.tagMapCombo.addItem(os.path.splitext(file)[0])
+        self.ConnectMenu.addAction(self.tagMapCombo)
+
         # Button to try initialize connection
         self.connectButton = QPushButton('Connect')
         self.connectButton.clicked.connect(self.connectModbus)
         self.connectAction = QWidgetAction(self.connectButton)
         self.connectAction.setDefaultWidget(self.connectButton)
         self.ConnectMenu.addAction(self.connectAction)
+    
+    def constructSettingsMenu(self) -> None:        
+        # Checkbox for enabling logging
+        self.enableLogging = QCheckBox(' Enable logging')
+        self.enableLoggingAction = QWidgetAction(self.enableLogging)
+        self.enableLoggingAction.setDefaultWidget(self.enableLogging)
+        self.SettingsMenu.addAction(self.enableLoggingAction)
+
+        # Path to log file
+        self.logPathInput = MenuTextInputWidget('Log Path')
+        self.SettingsMenu.addAction(self.logPathInput)
 
     def constructViewMenu(self) -> None:
         # Construct the button selector for graph display
@@ -120,17 +143,20 @@ class ModbusGui(QMainWindow):
         # self.ToolBar.addWidget(self.numGraphs)
         # self.numGraphs.addItem('1')
         # self.numGraphs.addItem('9')
-        # self.numGraphs.currentTextChanged.connect(lambda num: self.Graphs.showGraphs(int(num)))
+        # self.numGraphs.currentTextChanged.connect(lambda num: self.Graphs.,(int(num)))
     
     def connectModbus(self) -> None:
+        # Connect to logger using the settings
         self.Logger.connect(
             ip=self.ipInput.text(),
             port=int(self.portInput.text()),
             unit_id=int(self.unitIdInput.text())
         )
 
+        # Start timer
+        #TODO temporary
         self.pollTimer.start()
-         
+      
 
 
 class MultiGraphWidget(QWidget):
