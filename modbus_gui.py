@@ -31,6 +31,7 @@ from gui_resources.graph_widget import GraphWidget
 from gui_resources.resource_path import resource_path
 from gui_resources.menu_input import MenuTextInputWidget, MenuComboInputWidget
 from gui_resources.graph_layout_widget import ButtonGrid
+from gui_resources.channel_selection_widget import ChannelSelectionWidget
 from modbus_resources.ModbusLogging import ModbusLogger
 
 
@@ -63,6 +64,10 @@ class ModbusGui(QMainWindow):
 
         # Construct and add the tool bar to the window
         self.constructToolbar()
+
+        # Construct channel selection widget
+        self.ChannelSelectionWidget = ChannelSelectionWidget(self)
+        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.ChannelSelectionWidget)
     
     def constructMenuBar(self) -> None:
         # Create/add menu bar

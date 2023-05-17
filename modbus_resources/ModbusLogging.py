@@ -84,6 +84,12 @@ class ModbusLogger:
         '''
         return self.client.is_open
 
+    def setTagMap(self, tag_map: list[dict]) -> None:
+        '''
+        Set the tag map for the registers
+        '''
+        self.tag_map = tag_map
+
 
 
 if __name__ == '__main__':
