@@ -1,0 +1,197 @@
+[
+    {
+        "tag": "\"PurifierWithHoistFb_DB\".State",
+        "scale": 1
+    },
+    {
+        "tag": "\"CH Liquefier_DB\".State",
+        "scale": 1
+    },
+    {
+        "tag": "\"Helium Recovery_DB\".State",
+        "scale": 1
+    },
+    {
+        "tag": "\"System Status\".AlarmState",
+        "scale": 1
+    },
+    {
+        "tag": "\"PurifierWithHoistFb_DB\".Alarm",
+        "scale": 1
+    },
+    {
+        "tag": "\"CH Liquefier_DB\".Alarm",
+        "scale": 1
+    },
+    {
+        "tag": "\"Helium Recovery_DB\".Alarm",
+        "scale": 1
+    },
+    {
+        "tag": "\"Purity Meter_DB\".Alarm",
+        "scale": 1
+    },
+    {
+        "tag": "\"CH Liquefier_DB\".Trip",
+        "scale": 1
+    },
+    {
+        "tag": "\"Helium Recovery_DB\".Trip",
+        "scale": 1
+    },
+    {
+        "tag": "\"Purity Meter_DB\".\"Purity Downstream\"",
+        "scale": 100
+    },
+    {
+        "tag": "\"Purity Meter_DB\".\"Purity Upstream\"",
+        "scale": 100
+    },
+    {
+        "tag": "\"AIT502\".AI.Value",
+        "scale": 100
+    },
+    {
+        "tag": "\"DPT511\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"LT524\".AI.Value2",
+        "scale": 10
+    },
+    {
+        "tag": "\"PT305\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"PT306\".AI.Value",
+        "scale": 100
+    },
+    {
+        "tag": "\"PT503\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"PT520\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"TE521\".AI.Value",
+        "scale": 100
+    },
+    {
+        "tag": "\"TE522\".AI.Value",
+        "scale": 100
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"HE523\")",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY301\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY302\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY303\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"MV301\")",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY512\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY513\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY514\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY515\")",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY501\")",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XV527\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"P501\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY520\")",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"XY521\")",
+        "scale": 1
+    },
+    {
+        "tag": "0",
+        "scale": 1
+    },
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {}
+]

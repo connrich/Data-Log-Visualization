@@ -1,32 +1,41 @@
 [
     {
-        "tag": "\"HP Compressor_DB\".State",
+        "tag": "\"Helium Recovery_DB\".State",
         "scale": 1
     },
     {
-        "tag": "0",
+        "tag": "\"Purifier_DB\".State",
         "scale": 1
     },
     {
-        "tag": "\"CH Liquefier_DB\".State",
+        "tag": "\"CH Liquefier A_DB\".State",
         "scale": 1
     },
     {
-        "tag": "0",
+        "tag": "\"CH Liquefier B_DB\".State",
+        "scale": 1
+    },
+    {
+        "tag": "\"System Status\".AlarmState",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"PowerOutAutoRestart_DB\".UPS_Active)",
+        "scale": 1
+    },
+    {
+        "tag": "BOOL_TO_INT(\"UPS_LOBATT\")",
         "scale": 1
     },
     {},
     {},
     {},
-    {},
-    {},
-    {},
     {
-        "tag": "\"HP Compressor_DB\".Alarm",
+        "tag": "\"Helium Recovery_DB\".Alarm",
         "scale": 1
     },
     {
-        "tag": "\"HP Compressor_DB\".TripHistory",
+        "tag": "\"Helium Recovery_DB\".TripHistory",
         "scale": 1
     },
     {
@@ -38,27 +47,27 @@
         "scale": 1
     },
     {
-        "tag": "0",
+        "tag": "\"Purifier_DB\".Alarm",
         "scale": 1
     },
     {
-        "tag": "0",
+        "tag": "\"Purifier_DB\".TripHistory",
         "scale": 1
     },
     {
-        "tag": "\"CH Liquefier_DB\".Alarm",
+        "tag": "\"CH Liquefier A_DB\".Alarm",
         "scale": 1
     },
     {
-        "tag": "\"CH Liquefier_DB\".TripHistory",
+        "tag": "\"CH Liquefier A_DB\".TripHistory",
         "scale": 1
     },
     {
-        "tag": "0",
+        "tag": "\"CH Liquefier B_DB\".Alarm",
         "scale": 1
     },
     {
-        "tag": "0",
+        "tag": "\"CH Liquefier B_DB\".TripHistory",
         "scale": 1
     },
     {},
@@ -72,23 +81,43 @@
     {},
     {},
     {
-        "tag": "\"PT201\".AI.Value",
+        "tag": "\"LT524A\".AI.Value",
         "scale": 10
     },
     {
-        "tag": "\"PT214\".AI.Value",
+        "tag": "\"TE521A\".AI.Value",
         "scale": 10
     },
     {
-        "tag": "0",
-        "scale": 1
+        "tag": "\"TE522A\".AI.Value",
+        "scale": 10
     },
     {
-        "tag": "0",
-        "scale": 1
+        "tag": "\"PT520A\".AI.Value",
+        "scale": 10
     },
     {
-        "tag": "\"PT503\".AI.Value",
+        "tag": "\"LT524B\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"TE521B\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"TE522B\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"PT520B\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"TE411\".AI.Value",
+        "scale": 10
+    },
+    {
+        "tag": "\"TE412\".AI.Value",
         "scale": 10
     },
     {
@@ -96,65 +125,36 @@
         "scale": 10
     },
     {
-        "tag": "\"AIT502\".AI.Value",
+        "tag": "\"AT502\".AI.Value",
         "scale": 100
     },
     {
-        "tag": "\"LT524\".AI.Value",
+        "tag": "\"PT503\".AI.Value",
         "scale": 10
     },
     {
-        "tag": "\"TE521\".AI.Value",
+        "tag": "\"PT305\".AI.Value",
         "scale": 10
     },
     {
-        "tag": "\"TE522\".AI.Value",
+        "tag": "\"PT306\".AI.Value",
         "scale": 10
-    },
-    {
-        "tag": "\"PT520\".AI.Value",
-        "scale": 10
-    },
-    {
-        "tag": "\"Purity Meter_DB\".\"Purity Downstream\"",
-        "scale": 100
-    },
-    {
-        "tag": "\"Purity Meter_DB\".\"Purity Upstream\"",
-        "scale": 100
-    },
-    {
-        "tag": "0",
-        "scale": 1
-    },
-    {
-        "tag": "0",
-        "scale": 1
     },
     {
         "tag": "\"TT903\".AI.Value",
         "scale": 10
     },
+    {
+        "tag": "\"WT900\".AI.Value",
+        "scale": 10
+    },
     {},
     {},
     {},
     {},
-    {
-        "tag": "\"PLCInputs\"",
-        "scale": 1
-    },
-    {
-        "tag": "\"PLCOutput\"",
-        "scale": 1
-    },
-    {
-        "tag": "\"InputCard1\"",
-        "scale": 1
-    },
-    {
-        "tag": "\"OutputCard2\"",
-        "scale": 1
-    },
+    {},
+    {},
+    {},
     {},
     {},
     {},

@@ -1,0 +1,57 @@
+register,bit,tag,scale
+0,,0,1
+1,,"""CB Liquefier_DB"".State",1
+2,,"""Helium Recovery_DB"".State",1
+3,,"""System Status"".AlarmState",1
+4,,0,1
+5,,"""CB Liquefier_DB"".Alarm",1
+6,,"""Helium Recovery_DB"".Alarm",1
+7,,"""Purity Meter_DB"".Alarm",1
+8,,"""CB Liquefier_DB"".Trip",1
+9,,"""Helium Recovery_DB"".Trip",1
+10,,"""HP Compressor_DB"".State",1
+11,,"""HP Compressor_DB"".Alarm",1
+12,,"""HP Compressor_DB"".Trip",1
+13,,"""DPT508"".AI.Value",100
+14,,"""LIT501"".AI.Value2",10
+15,,"""PT214"".AI.Value",100
+16,,"""PT409"".AI.Value",100
+17,,"""PT503"".AI.Value",100
+18,,"""PT504"".AI.Value",100
+19,,"""PT505"".AI.Value",100
+20,,"""PT506"".AI.Value",100
+21,,"""PT1016"".AI.Value",10
+22,,"""TE523"".AI.Value",10
+23,,"""TE551"".AI.Value",10
+24,,"""TE552"".AI.Value",10
+25,,"""FC501"".AI.Value",10
+26,,"""FC501_OUT"".Value",10
+27,,"""FC502"".AI.Value",10
+28,,"""FC502_OUT"".Value",10
+29,,"""Purity Meter_DB"".""Purity Downstream""",100
+30,,"""Purity Meter_DB"".""Purity Upstream""",100
+31,,"""AIT501"".AI.Value",100
+32,,0,1
+33,,0,1
+34,,0,1
+35,,0,1
+36,,0,1
+37,,0,1
+38,,0,1
+39,,0,1
+40,,0,1
+41,,0,1
+42,,0,1
+43,,0,1
+44,,0,1
+45,,0,1
+46,,"""HP Compressor_DB"".HP_RunFB",1
+47,0,Purity Meter_DB.DownstreamSamplingValve;,1
+47,1,Purity Meter_DB.UpstreamSamplingValve;,1
+47,2,CB Liquefier_DB.HighPressureVlv;,1
+47,3,HP Compressor_DB.LSHH;,1
+47,4,HP Compressor_DB.LSH;,1
+47,5,HP Compressor_DB.LSL;,1
+47,6,HP Compressor_DB.GasbagVentValve;,1
+47,7,HP Compressor_DB.DC_OK;,1
+47,8,HP Compressor_DB.HP_RunFB;,1
